@@ -6,7 +6,7 @@ export PATH=/data/armbian/armbian.git/cache/toolchain/gcc-arm-8.3-2019.03-x86_64
 
 make distclean
 
-make ARCH=arm  CROSS_COMPILE="aarch64-linux-gnu-" rk3399_linux_defconfig
+make ARCH=arm  CROSS_COMPILE="aarch64-linux-gnu-" rk3399_defconfig
 #make ARCH=arm  CROSS_COMPILE="aarch64-none-linux-gnu-" rk3399_linux_defconfig
 echo "make rk3399_linux_defconfig done! [$?]"
 
