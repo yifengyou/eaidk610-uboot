@@ -1,5 +1,6 @@
 /gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu*
 
+/.config
 *.o
 *.cmd
 *.so
