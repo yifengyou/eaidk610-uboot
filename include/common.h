@@ -110,7 +110,7 @@ typedef volatile unsigned char	vu_char;
 #define debug_cond(cond, fmt, args...)		\
 	do {					\
 		if (cond)			\
-			printf(" DEBUG: "fmt, ##args);	\
+			printf("+DEBUG: "fmt, ##args);	\
 	} while (0)
 
 #define debug(fmt, args...)			\

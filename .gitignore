@@ -6,6 +6,8 @@
 *.so
 *.su
 *.img
+*.o.d
+*.swp
 
 System.map
 arch/arm/lib/asm-offsets.s

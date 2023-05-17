@@ -240,7 +240,11 @@ CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
 
 HOSTCC       = cc
 HOSTCXX      = c++
-HOSTCFLAGS   = -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer
+
+# yyf: disable all warnning, just for fun
+HOSTCFLAGS   = -w -Wstrict-prototypes -O2 -fomit-frame-pointer
+#HOSTCFLAGS   = -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer
+
 HOSTCXXFLAGS = -O2
 
 ifeq ($(HOSTOS),cygwin)
@@ -384,9 +388,16 @@ CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
 
 KBUILD_CPPFLAGS := -D__KERNEL__ -D__UBOOT__
 
-KBUILD_CFLAGS   := -Wall -Wstrict-prototypes \
-		   -Wno-format-security \
+# yyf: disable all warnning, just for fun
+KBUILD_CFLAGS   := -w \
 		   -fno-builtin -ffreestanding
+#KBUILD_CFLAGS   := -Wno-all -Wstrict-prototypes \
+#		   -Wno-format-security \
+#		   -Wno-maybe-uninitialized \
+#		   -Wno-format-truncation \
+#		   -Wno-implicit-function-declaration \
+#		   -fno-builtin -ffreestanding
+
 KBUILD_AFLAGS   := -D__ASSEMBLY__
 
 # Read UBOOTRELEASE from include/config/uboot.release (if it exists)

@@ -261,6 +261,7 @@ int arch_cpu_init(void)
 #ifdef CONFIG_DISPLAY_CPUINFO
 int print_cpuinfo(void)
 {
+	debug("call int print_cpuinfo(void)");
 	if (gd->arch.chiptype == RKCHIP_UNKNOWN)
 		rk_get_chiptype();
 
