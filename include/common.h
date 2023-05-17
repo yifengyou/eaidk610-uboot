@@ -106,10 +106,11 @@ typedef volatile unsigned char	vu_char;
  * computed by a preprocessor in the best case, allowing for the best
  * optimization.
  */
+/* yyf: format debug info */
 #define debug_cond(cond, fmt, args...)		\
 	do {					\
 		if (cond)			\
-			printf(fmt, ##args);	\
+			printf(" DEBUG: "fmt, ##args);	\
 	} while (0)
 
 #define debug(fmt, args...)			\
