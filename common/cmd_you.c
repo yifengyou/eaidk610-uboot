@@ -50,7 +50,7 @@ static int do_you(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 
 U_BOOT_CMD(
 	you,	CONFIG_SYS_MAXARGS,	1,	do_you,
-	"you args to console",
+	"echo args to console",
 	"[args..]\n"
-	"    - you args to console; \\c suppresses newline"
+	"    - echo args to console; \\c suppresses newline"
 );
