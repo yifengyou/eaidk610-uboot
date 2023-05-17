@@ -4,9 +4,17 @@
 
 ## QA
 
-### error: redefinition of ‘fdt_property_cell’
+### Q: how to update config
 
-Q:
+A:
+
+```
+vi include/configs/rk33plat.h
+```
+
+
+### Q: error redefinition of ‘fdt_property_cell’
+
 
 ```
       |                   ^~~~~~~~~~~~~~~~~~

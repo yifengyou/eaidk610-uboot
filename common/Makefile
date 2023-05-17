@@ -99,6 +99,7 @@ endif
 obj-$(CONFIG_CMD_DISPLAY) += cmd_display.o
 obj-$(CONFIG_CMD_DTT) += cmd_dtt.o
 obj-$(CONFIG_CMD_ECHO) += cmd_echo.o
+obj-$(CONFIG_CMD_YOU) += cmd_you.o
 obj-$(CONFIG_ENV_IS_IN_EEPROM) += cmd_eeprom.o
 obj-$(CONFIG_CMD_EEPROM) += cmd_eeprom.o
 obj-$(CONFIG_CMD_ELF) += cmd_elf.o

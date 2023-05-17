@@ -148,6 +148,22 @@
  * data to security partition, not to rpmb.
  */
 	#define CONFIG_OPTEE_ALWAYS_USE_SECURITY_PARTITION
+/*
+ * yyf: add extra cmd
+ * */
+	#define CONFIG_CMD_YOU
+	#define CONFIG_CMD_EXT4
+	#define CONFIG_CMD_PART
+	#define CONFIG_CMD_GPT
+	#define CONFIG_PARTITION_UUIDS
+	#define CONFIG_CMD_BDI
+	#define CONFIG_CMD_NET
+	#define CONFIG_MENU
+	#define CONFIG_CMD_BOOTMENU
+	#define CONFIG_CMD_PXE
+	#define CONFIG_CMD_FAT
+	#define CONFIG_CMD_ECHO
+	#define CONFIG_CMD_BMP
 #endif
 
 #if defined(CONFIG_RKCHIP_RK322XH)
