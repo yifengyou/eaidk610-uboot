@@ -988,6 +988,9 @@ RK_TOS1_IMG ?= $(shell sed -n "/PATH1=/s/PATH1=//p" ./tools/rk_tools/RKTRUST/$(R
 endif
 
 RKLoader_uboot.bin: u-boot.bin
+ifneq ($(src), $(obj))
+	@echo "copy $(src)/rk_tools to $(obj)/tools" && cp -a ${src}/tools/rk_tools ./tools
+endif
 ifdef CONFIG_SECOND_LEVEL_BOOTLOADER
 ifdef CONFIG_PRODUCT_ECHO
 	$(if $(CONFIG_MERGER_MINILOADER), ./tools/boot_merger ./tools/rk_tools/RKBOOT/$(RKCHIP)_ECHOMINIALL.ini)
@@ -1006,7 +1009,7 @@ ifdef CONFIG_MERGER_TRUSTOS
 endif
 	./tools/loaderimage --pack --uboot u-boot.bin uboot.img
 else
-	./tools/boot_merger --subfix "$(RK_SUBFIX)" ./tools/rk_tools/RKBOOT/$(RKCHIP).ini
+	./tools/boot_merger --subfix "$(RK_SUBFIX)" $(srctree)/tools/rk_tools/RKBOOT/$(RKCHIP).ini
 endif # CONFIG_SECOND_LEVEL_BOOTLOADER
 
 endif # CONFIG_ROCKCHIP
@@ -1479,7 +1482,7 @@ distclean: mrproper
 
 backup:
 	F=`basename $(srctree)` ; cd .. ; \
-	gtar --force-local -zcvf `LC_ALL=C date "+$$F-%Y-%m-%d-%T.tar.gz"` $$F
+	tar --force-local -zcvf `LC_ALL=C date "+$$F-%Y-%m-%d-%T.tar.gz"` $$F
 
 help:
 	@echo  'Cleaning targets:'
