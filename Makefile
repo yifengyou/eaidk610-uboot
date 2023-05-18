@@ -51,6 +51,15 @@ export LC_COLLATE LC_NUMERIC
 # To put more focus on warnings, be less verbose as default
 # Use 'make V=1' to see the full commands
 
+# origin函数：不改变变量，返回变量的来源（返回固定的来源字符串）
+# 'command line': if variable was defined on the command line.
+# 'undefined',
+# 'default',
+# 'environment',
+# 'environment override'
+# 'file'
+# 'ovveride'
+# 'automatic'
 ifeq ("$(origin V)", "command line")
   KBUILD_VERBOSE = $(V)
 endif
