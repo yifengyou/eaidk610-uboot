@@ -117,6 +117,7 @@ ifeq ($(KBUILD_SRC),)
 
 # OK, Make called in directory where kernel src resides
 # Do we want to locate output files in a separate directory?
+# 是否考虑将编译输出单独存放
 ifeq ("$(origin O)", "command line")
   KBUILD_OUTPUT := $(O)
 endif
@@ -125,6 +126,11 @@ endif
 PHONY := _all
 _all:
 
+# targets : prerequisites ; command
+#	command
+#	...
+# 如果命令和依赖放在同一行，可以用分号分隔
+# $(CURDIR)Set to the absolute pathname of the current working directory
 # Cancel implicit rules on top Makefile
 $(CURDIR)/Makefile Makefile: ;
 
@@ -235,10 +241,11 @@ endif
 
 HOST_ARCH=$(shell uname -m)
 ifeq ($(HOST_ARCH),aarch64)
+# 如果编译机本身就是aarch64，就不需要交叉编译器
 CROSS_COMPILE   =
 endif
 
-
+# 默认配置文件是.config
 KCONFIG_CONFIG	?= .config
 export KCONFIG_CONFIG
 
@@ -257,6 +264,7 @@ HOSTCFLAGS   = -w -Wstrict-prototypes -O2 -fomit-frame-pointer
 HOSTCXXFLAGS = -O2
 
 ifeq ($(HOSTOS),cygwin)
+# 如果是windows编译环境
 HOSTCFLAGS	+= -ansi
 endif
 
@@ -283,7 +291,7 @@ os_x_before	= $(shell if [ $(DARWIN_MAJOR_VERSION) -le $(1) -a \
 HOSTCC       = $(call os_x_before, 10, 5, "cc", "gcc")
 HOSTCFLAGS  += $(call os_x_before, 10, 4, "-traditional-cpp")
 HOSTLDFLAGS += $(call os_x_before, 10, 5, "-multiply_defined suppress")
-endif
+endif # ifeq ($(HOSTOS),darwin)
 
 # Decide whether to build built-in, modular, or both.
 # Normally, just do built-in.
@@ -438,6 +446,7 @@ export RCS_TAR_IGNORE := --exclude SCCS --exclude BitKeeper --exclude .svn \
 
 # ===========================================================================
 # Rules shared between *config targets and build targets
+
 
 # Basic helpers built in scripts/
 PHONY += scripts_basic
@@ -989,6 +998,7 @@ endif
 
 RKLoader_uboot.bin: u-boot.bin
 ifneq ($(src), $(obj))
+# 如果src目录，与目标目录不同，则需要拷贝rk_tools过去，否则生成镜像会缺失依赖
 	@echo "copy $(src)/rk_tools to $(obj)/tools" && cp -a ${src}/tools/rk_tools ./tools
 endif
 ifdef CONFIG_SECOND_LEVEL_BOOTLOADER
