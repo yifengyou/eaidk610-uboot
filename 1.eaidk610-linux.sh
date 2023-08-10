@@ -7,7 +7,7 @@ echo $PATH
 
 CURRENTDIR=`pwd`
 echo "CURRENTDIR: ${CURRENTDIR}"
-BUILDDIR=${CURRENTDIR}-build
+BUILDDIR=${CURRENTDIR}-build-linux
 echo "BUILDDIR: ${BUILDDIR}"
 if [ -d ${BUILDDIR} ]; then
 	rm -rf ${BUILDDIR}
