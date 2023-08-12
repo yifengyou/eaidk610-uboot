@@ -180,6 +180,8 @@ static int rockchip_dsi_panel_prepare(struct display_state *state)
 	struct rockchip_dsi_panel *panel = panel_state->private;
 	int ret;
 
+    printf ("[YYF] %s:%s:%d (mipi dsi panel prepare)\n", __FILE__, __func__, __LINE__);
+
 	fdtdec_set_gpio(&panel->enable_gpio, 1);
 	msleep(panel->delay_prepare);
 

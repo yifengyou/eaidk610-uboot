@@ -181,6 +181,7 @@ void rockchip_panel_deinit(struct display_state *state)
 
 int rockchip_panel_prepare(struct display_state *state)
 {
+    printf ("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
 	struct panel_state *panel_state = &state->panel_state;
 	const struct rockchip_panel *panel = panel_state->panel;
 
@@ -188,7 +189,7 @@ int rockchip_panel_prepare(struct display_state *state)
 		printf("%s: failed to find panel prepare funcs\n", __func__);
 		return -ENODEV;
 	}
-
+    // 多态
 	return panel->funcs->prepare(state);
 }
 

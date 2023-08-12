@@ -272,7 +272,7 @@ void board_fbt_boot_failed(const char* boot)
 		printf("try to start backup\n");
 		char *const boot_cmd[] = {"bootrk", BACKUP_NAME};
 		do_bootrk(NULL, 0, ARRAY_SIZE(boot_cmd), boot_cmd);
-	}  
+	}
 #endif
 #ifdef CONFIG_CMD_ROCKUSB
 	printf("try to start rockusb\n");
@@ -479,7 +479,8 @@ bool board_fbt_exit_uboot_charge(void)
  */
 void board_fbt_preboot(void)
 {
-	enum fbt_reboot_type frt;
+    printf ("[YYF] %s:%s:%d (fastboot board_fbt_preboot)\n", __FILE__, __func__, __LINE__);
+    enum fbt_reboot_type frt;
 	__maybe_unused bool charge_enable = false;
 #ifdef CONFIG_UBOOT_CHARGE
 	int charge_node;			/*device node*/
@@ -613,6 +614,7 @@ void board_fbt_preboot(void)
 	if (g_logo_on_state != 0) {
 #ifdef CONFIG_ROCKCHIP_DISPLAY
 		if (g_is_new_display) {
+		    // 显示LOGO
 			rockchip_show_logo();
 		} else
 #endif

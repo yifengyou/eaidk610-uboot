@@ -99,7 +99,12 @@ endif
 obj-$(CONFIG_CMD_DISPLAY) += cmd_display.o
 obj-$(CONFIG_CMD_DTT) += cmd_dtt.o
 obj-$(CONFIG_CMD_ECHO) += cmd_echo.o
+
+# [YYF] extra add cmd
 obj-$(CONFIG_CMD_YOU) += cmd_you.o
+obj-$(CONFIG_CMD_YIFENGYOU) += cmd_yifengyou.o
+obj-$(CONFIG_CMD_ROCKCHIP_SHOW_BMP) += cmd_rockchip_show_bmp.o
+
 obj-$(CONFIG_ENV_IS_IN_EEPROM) += cmd_eeprom.o
 obj-$(CONFIG_CMD_EEPROM) += cmd_eeprom.o
 obj-$(CONFIG_CMD_ELF) += cmd_elf.o

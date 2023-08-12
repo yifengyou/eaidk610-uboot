@@ -152,6 +152,8 @@
  * yyf: add extra cmd
  * */
 	#define CONFIG_CMD_YOU
+	#define CONFIG_CMD_YIFENGYOU
+	#define CONFIG_CMD_ROCKCHIP_SHOW_BMP
 	#define CONFIG_CMD_EXT4
 	#define CONFIG_CMD_PART
 	#define CONFIG_CMD_GPT
