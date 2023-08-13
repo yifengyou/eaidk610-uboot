@@ -244,11 +244,16 @@ const char *bootdelay_process(void)
 #endif /* CONFIG_BOOTCOUNT_LIMIT */
 
 	s = getenv("bootdelay");
+    debug("[YYF] getenv(\"bootdelay\")=%d\n", s);
+#ifdef CONFIG_BOOTDELAY
+    debug("[YYF] CONFIG_BOOTDELAY=%d\n", CONFIG_BOOTDELAY);
+#endif
 	bootdelay = s ? (int)simple_strtol(s, NULL, 10) : CONFIG_BOOTDELAY;
 
 #ifdef CONFIG_OF_CONTROL
 	bootdelay = fdtdec_get_config_int(gd->fdt_blob, "bootdelay",
 			bootdelay);
+	debug("[YYF] CONFIG_OF_CONTROL bootdelay=%d\n", bootdelay);
 #endif
 
 	debug("### main_loop entered: bootdelay=%d\n\n", bootdelay);

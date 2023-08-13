@@ -154,6 +154,9 @@
 	#define CONFIG_CMD_YOU
 	#define CONFIG_CMD_YIFENGYOU
 	#define CONFIG_CMD_ROCKCHIP_SHOW_BMP
+	#define CONFIG_CMD_LCD
+    #define CONFIG_BOOTDELAY 99
+
 	#define CONFIG_CMD_EXT4
 	#define CONFIG_CMD_PART
 	#define CONFIG_CMD_GPT
@@ -228,7 +231,7 @@
 #endif /* CONFIG_SECUREBOOT_CRYPTO */
 
 /* mod it to enable console commands.	*/
-#define CONFIG_BOOTDELAY		10
+/* #define CONFIG_BOOTDELAY		60 */
 
 /* efuse version */
 #ifdef CONFIG_RK_EFUSE

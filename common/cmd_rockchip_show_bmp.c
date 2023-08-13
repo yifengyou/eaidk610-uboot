@@ -14,9 +14,11 @@ static int do_rockchip_show_bmp(cmd_tbl_t *cmdtp, int flag, int argc, char * con
 {
     // 如果用户输入了kernel作为参数，则打印kernel
     if (argc > 1 && strcmp(argv[1], "kernel") == 0) {
+        printf("[YYF] show logo_kernel.bmp");
         rockchip_show_bmp("logo_kernel.bmp");
     }
     else {
+        printf("[YYF] show logo.bmp");
         rockchip_show_bmp("logo.bmp");
     }
     return 0;

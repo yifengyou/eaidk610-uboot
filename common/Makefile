@@ -102,6 +102,7 @@ obj-$(CONFIG_CMD_ECHO) += cmd_echo.o
 
 # [YYF] extra add cmd
 obj-$(CONFIG_CMD_YOU) += cmd_you.o
+obj-$(CONFIG_CMD_LCD) += cmd_lcd.o
 obj-$(CONFIG_CMD_YIFENGYOU) += cmd_yifengyou.o
 obj-$(CONFIG_CMD_ROCKCHIP_SHOW_BMP) += cmd_rockchip_show_bmp.o
 
