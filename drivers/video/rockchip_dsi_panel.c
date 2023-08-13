@@ -226,6 +226,7 @@ static int rockchip_dsi_panel_enable(struct display_state *state)
 	struct panel_state *panel_state = &state->panel_state;
 	struct rockchip_dsi_panel *panel = panel_state->private;
 
+
 	msleep(panel->delay_enable);
 
 #ifdef CONFIG_RK_PWM_BL

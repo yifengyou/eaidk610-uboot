@@ -62,7 +62,7 @@ static void *get_display_buffer(int size) {
     buf = (void *) roundup_memory;
 
     memory_end = roundup_memory + size;
-
+    printf("[YYF] alloc %d memory to display\n", memory_end);
     return buf;
 }
 
@@ -307,7 +307,7 @@ static int display_get_timing_from_dts(int panel, const void *blob,
  */
 void drm_mode_set_crtcinfo(struct drm_display_mode *p, int adjust_flags) {
 
-    printf ("[YYF] %s:%s:%d (set screen param)\n", __FILE__, __func__, __LINE__);
+    printf("[YYF] %s:%s:%d (set screen param)\n", __FILE__, __func__, __LINE__);
 
     if ((p == NULL) || ((p->type & DRM_MODE_TYPE_CRTC_C) == DRM_MODE_TYPE_BUILTIN))
         return;
@@ -436,7 +436,7 @@ static int display_get_timing(struct display_state *state) {
     int conn_node = conn_state->node;
     int panel;
 
-    printf ("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
+    printf("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
 
     panel = get_panel_node(state, conn_node);
     if (panel < 0) {
@@ -496,7 +496,7 @@ static int display_init(struct display_state *state) {
     struct drm_display_mode *mode = &conn_state->mode;
     int ret = 0;
 
-    printf ("[YYF] %s:%s:%d (display init)\n", __FILE__, __func__, __LINE__);
+    printf("[YYF] %s:%s:%d (display init)\n", __FILE__, __func__, __LINE__);
     if (state->is_init)
         return 0;
 
@@ -589,7 +589,7 @@ static int display_enable(struct display_state *state) {
     const struct rockchip_crtc_funcs *crtc_funcs = crtc->funcs;
     int ret = 0;
 
-    printf ("[YYF] %s:%s:%d (display enable)\n", __FILE__, __func__, __LINE__);
+    printf("[YYF] %s:%s:%d (display enable)\n", __FILE__, __func__, __LINE__);
     display_init(state);
 
     if (!state->is_init)
@@ -738,6 +738,117 @@ static int display_logo(struct display_state *state) {
     return 0;
 }
 
+int load_color(struct logo_info *logo, int color) {
+    struct bmp_header *header;
+    void *dst = NULL, *pdst;
+    int size;
+    unsigned char color_array[3];
+
+    printf("[YYF] %s:%s:%d (load color 0x%06X)\n", __FILE__, __func__, __LINE__, color);
+
+    header = get_bmp_header("logo.bmp");
+    if (!header)
+        return -EINVAL;
+
+    logo->bpp = get_unaligned_le16(&header->bit_count);
+    printf("[YYF] color bpp:%d\n", logo->bpp);
+    logo->width = get_unaligned_le32(&header->width);
+    logo->width = 720;
+    printf("[YYF] color width:%d\n", logo->width);
+    logo->height = get_unaligned_le32(&header->height);
+    logo->height = 1080;
+    printf("[YYF] color height:%d\n", logo->height);
+    header->file_size = 2765372;
+    size = get_unaligned_le32(&header->file_size);
+    printf("[YYF] color size:%d\n", size);
+    logo->mode = ROCKCHIP_DISPLAY_FULLSCREEN;
+    printf("[YYF] color mode: ROCKCHIP_DISPLAY_FULLSCREEN\n");
+    
+    pdst = get_display_buffer(size);
+    dst = pdst;
+
+    color_array[0] = (color >> 16) & 0xFF; // 取color的最高8位 B
+    color_array[1] = (color >> 8) & 0xFF; // 取color的次高8位 G
+    color_array[2] = color & 0xFF; // 取color的最低8位 R
+    printf("[YYF] R:0x%02X G:0x%02X B:0x%02X\n", color_array[2],color_array[1],color_array[0]);
+
+    for (int i = 0; i < size; i++) {
+        memcpy(pdst + i * 3, color_array, 3);
+    }
+
+    logo->offset = get_unaligned_le32(&header->data_offset);
+    logo->ymirror = 1;
+
+    logo->mem = (u32)(unsigned long)dst;
+    return 0;
+}
+
+static int display_color(struct display_state *state) {
+    struct crtc_state *crtc_state = &state->crtc_state;
+    struct connector_state *conn_state = &state->conn_state;
+    struct logo_info *logo = &state->logo;
+    int hdisplay, vdisplay;
+
+    display_init(state);
+    if (!state->is_init)
+        return -ENODEV;
+
+    switch (logo->bpp) {
+        case 16:
+            crtc_state->format = ROCKCHIP_FMT_RGB565;
+            break;
+        case 24:
+            crtc_state->format = ROCKCHIP_FMT_RGB888;
+            break;
+        case 32:
+            crtc_state->format = ROCKCHIP_FMT_ARGB8888;
+            break;
+        default:
+            printf("can't support bmp bits[%d]\n", logo->bpp);
+            return -EINVAL;
+    }
+    crtc_state->rb_swap = logo->bpp != 32;
+    hdisplay = conn_state->mode.hdisplay;
+    vdisplay = conn_state->mode.vdisplay;
+    crtc_state->src_w = logo->width;
+    crtc_state->src_h = logo->height;
+    crtc_state->src_x = 0;
+    crtc_state->src_y = 0;
+    crtc_state->ymirror = logo->ymirror;
+
+    crtc_state->dma_addr = logo->mem + logo->offset;
+    crtc_state->xvir = ALIGN(crtc_state->src_w * logo->bpp, 32) >> 5;
+
+    if (logo->mode == ROCKCHIP_DISPLAY_FULLSCREEN) {
+        crtc_state->crtc_x = 0;
+        crtc_state->crtc_y = 0;
+        crtc_state->crtc_w = hdisplay;
+        crtc_state->crtc_h = vdisplay;
+    } else {
+        if (crtc_state->src_w >= hdisplay) {
+            crtc_state->crtc_x = 0;
+            crtc_state->crtc_w = hdisplay;
+        } else {
+            crtc_state->crtc_x = (hdisplay - crtc_state->src_w) / 2;
+            crtc_state->crtc_w = crtc_state->src_w;
+        }
+
+        if (crtc_state->src_h >= vdisplay) {
+            crtc_state->crtc_y = 0;
+            crtc_state->crtc_h = vdisplay;
+        } else {
+            crtc_state->crtc_y = (vdisplay - crtc_state->src_h) / 2;
+            crtc_state->crtc_h = crtc_state->src_h;
+        }
+    }
+
+    display_set_plane(state);
+    // 使能显示
+    display_enable(state);
+
+    return 0;
+}
+
 static int get_crtc_id(const void *blob, int connect) {
     int phandle, remote;
     int val;
@@ -784,6 +895,8 @@ static int find_connector_node(const void *blob, int node) {
 struct rockchip_logo_cache *find_or_alloc_logo_cache(const char *bmp) {
     struct rockchip_logo_cache *tmp, *logo_cache = NULL;
 
+    printf("[YYF] %s:%s:%d (logo cache %s)\n", __FILE__, __func__, __LINE__, bmp);
+
     list_for_each_entry(tmp, &logo_cache_list, head)
     {
         if (!strcmp(tmp->name, bmp)) {
@@ -812,6 +925,8 @@ static int load_bmp_logo(struct logo_info *logo, const char *bmp_name) {
     struct bmp_header *header;
     void *dst = NULL, *pdst;
     int size;
+
+    printf("[YYF] %s:%s:%d (load bmp %s)\n", __FILE__, __func__, __LINE__, bmp_name);
 
     if (!logo || !bmp_name)
         return -EINVAL;
@@ -881,7 +996,7 @@ static int load_bmp_logo(struct logo_info *logo, const char *bmp_name) {
 void rockchip_show_bmp(const char *bmp) {
     struct display_state *s;
 
-    printf ("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
+    printf("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
     if (!bmp) {
         list_for_each_entry(s, &rockchip_display_list, head)
         display_disable(s);
@@ -896,9 +1011,24 @@ void rockchip_show_bmp(const char *bmp) {
     }
 }
 
+int rockchip_show_color(const int color) {
+    struct display_state *s;
+
+    printf("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
+    list_for_each_entry(s, &rockchip_display_list, head)
+    {
+        s->logo.mode = s->charge_logo_mode;
+        if (load_color(&s->logo, color))
+            continue;
+        display_color(s);
+    }
+    return 1;
+}
+
+
 void rockchip_show_logo(void) {
     struct display_state *s;
-    printf ("[YYF] %s:%s:%d (show logo here)\n", __FILE__, __func__, __LINE__);
+    printf("[YYF] %s:%s:%d (show logo here)\n", __FILE__, __func__, __LINE__);
     list_for_each_entry(s, &rockchip_display_list, head)
     {
         s->logo.mode = s->logo_mode;
@@ -921,7 +1051,7 @@ int rockchip_display_init(void) {
     struct display_state *s;
     const char *name;
 
-    printf ("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
+    printf("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
 
     printf("Rockchip UBOOT DRM driver version: %s\n", DRIVER_VERSION);
 

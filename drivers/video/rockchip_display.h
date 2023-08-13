@@ -40,6 +40,9 @@ enum display_mode {
 /* for use special outface */
 #define ROCKCHIP_OUT_MODE_AAAA	15
 
+/*
+ * crtc是一个编程术语，它是cathode ray tube controller阴极射线管控制器
+ * */
 struct crtc_state {
 	const struct rockchip_crtc *crtc;
 	void *private;
@@ -141,5 +144,6 @@ struct display_state {
 int drm_mode_vrefresh(const struct drm_display_mode *mode);
 bool drm_mode_is_420(const struct drm_display_info *display,
 		     const struct drm_display_mode *mode);
-
+static int display_logo(struct display_state *state);
+int load_color(struct logo_info *logo, int color);
 #endif

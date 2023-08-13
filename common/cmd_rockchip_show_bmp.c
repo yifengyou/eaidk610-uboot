@@ -14,11 +14,11 @@ static int do_rockchip_show_bmp(cmd_tbl_t *cmdtp, int flag, int argc, char * con
 {
     // 如果用户输入了kernel作为参数，则打印kernel
     if (argc > 1 && strcmp(argv[1], "kernel") == 0) {
-        printf("[YYF] show logo_kernel.bmp");
+        printf("[YYF] show logo_kernel.bmp\n");
         rockchip_show_bmp("logo_kernel.bmp");
     }
     else {
-        printf("[YYF] show logo.bmp");
+        printf("[YYF] show logo.bmp\n");
         rockchip_show_bmp("logo.bmp");
     }
     return 0;
@@ -28,5 +28,5 @@ U_BOOT_CMD(
 	rockchip_show_bmp,	CONFIG_SYS_MAXARGS,	1,	do_rockchip_show_bmp,
 	"show bmp",
 	"[args..]\n"
-	"    - show bmp in lcd"
+	"    - if kernel , show logo_kernel.bmp, else show logo.bmp"
 );

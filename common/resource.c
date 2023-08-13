@@ -470,7 +470,8 @@ bool _show_resource_image(const char* image_path) {
 
 #ifdef CONFIG_ROCKCHIP_DISPLAY
 extern int g_is_new_display;
-extern bool rockchip_show_bmp(const char *bmp);
+extern int rockchip_show_bmp(const char *bmp);
+extern int rockchip_show_color(const int color);
 #endif
 
 bool show_resource_image(const char *image_path)
