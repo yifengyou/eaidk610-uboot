@@ -746,24 +746,26 @@ int load_color(struct logo_info *logo, int color) {
 
     printf("[YYF] %s:%s:%d (load color 0x%06X)\n", __FILE__, __func__, __LINE__, color);
 
-    header = get_bmp_header("logo.bmp");
-    if (!header)
-        return -EINVAL;
+//    header = get_bmp_header("logo.bmp");
+//    if (!header)
+//        return -EINVAL;
 
-    logo->bpp = get_unaligned_le16(&header->bit_count);
+//    logo->bpp = get_unaligned_le16(&header->bit_count);
+    logo->bpp = 24;
     printf("[YYF] color bpp:%d\n", logo->bpp);
-    logo->width = get_unaligned_le32(&header->width);
+//    logo->width = get_unaligned_le32(&header->width);
     logo->width = 720;
     printf("[YYF] color width:%d\n", logo->width);
-    logo->height = get_unaligned_le32(&header->height);
+//    logo->height = get_unaligned_le32(&header->height);
     logo->height = 1080;
     printf("[YYF] color height:%d\n", logo->height);
-    header->file_size = 2765372;
-    size = get_unaligned_le32(&header->file_size);
+//    header->file_size = 2765372;
+//    size = get_unaligned_le32(&header->file_size);
+    size = 2765372;
     printf("[YYF] color size:%d\n", size);
     logo->mode = ROCKCHIP_DISPLAY_FULLSCREEN;
     printf("[YYF] color mode: ROCKCHIP_DISPLAY_FULLSCREEN\n");
-    
+
     pdst = get_display_buffer(size);
     dst = pdst;
 
@@ -776,8 +778,11 @@ int load_color(struct logo_info *logo, int color) {
         memcpy(pdst + i * 3, color_array, 3);
     }
 
-    logo->offset = get_unaligned_le32(&header->data_offset);
+//    logo->offset = get_unaligned_le32(&header->data_offset);
+    logo->offset = 54;
+    printf("[YYF] color offset: 0x%x,%d\n",logo->offset,logo->offset);
     logo->ymirror = 1;
+    printf("[YYF] color ymirror: 0x%x,%d\n",logo->ymirror,logo->ymirror);
 
     logo->mem = (u32)(unsigned long)dst;
     return 0;
@@ -1011,7 +1016,7 @@ void rockchip_show_bmp(const char *bmp) {
     }
 }
 
-int rockchip_show_color(const int color) {
+void rockchip_show_color(const int color) {
     struct display_state *s;
 
     printf("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
@@ -1022,7 +1027,6 @@ int rockchip_show_color(const int color) {
             continue;
         display_color(s);
     }
-    return 1;
 }
 
 

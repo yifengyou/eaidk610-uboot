@@ -16,26 +16,29 @@
 
 #include <../drivers/video/rockchip_display.h>
 
-// 定义一个颜色数组，包含红、绿、蓝、白、黑五种颜色
-static int colors[] = {0xFF0000, 0x00FF00, 0x0000FF, 0xFFFFFF, 0x000000, 0x123456};
+static int colors[] = {
+        0xFF0000,// 红
+        0xFF7D00,// 橙
+        0xFFFF00,// 黄
+        0x00FF00,// 绿
+        0x00FFFF,// 青
+        0x0000FF,// 蓝
+        0xFF00FF,// 紫
+        0xFFFFFF,// 白
+        0x000000,// 黑
+};
 
 // 定义一个变量，记录当前的颜色索引
 static int color_index = 0;
 
 static int do_lcd(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[]) {
-    // 获取LCD的宽度和高度
-    int width = lcd_get_pixel_width();
-    int height = lcd_get_pixel_height();
 
-    // 获取当前的颜色值
     int color = colors[color_index];
 
     rockchip_show_color(color);
 
-    // 打印当前的颜色信息
     printf("LCD color: 0x%06X\n", color);
 
-    // 更新颜色索引，如果超过数组长度，就从头开始
     color_index++;
     if (color_index >= ARRAY_SIZE(colors)) {
         color_index = 0;
@@ -46,8 +49,7 @@ static int do_lcd(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[]) {
 
 // 定义扩展命令lcd_cmd
 U_BOOT_CMD(
-        lcd, CONFIG_SYS_MAXARGS,
-1, do_lcd,
+        lcd, CONFIG_SYS_MAXARGS,1, do_lcd,
 "change LCD color",
 " - change LCD color in a loop"
 );
