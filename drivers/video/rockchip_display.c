@@ -62,7 +62,7 @@ static void *get_display_buffer(int size) {
     buf = (void *) roundup_memory;
 
     memory_end = roundup_memory + size;
-    printf("[YYF] alloc %d memory to display\n", memory_end);
+    printf("[YYF] alloc %d - %d memory for lcd display\n", memory_start, memory_end);
     return buf;
 }
 
@@ -714,6 +714,7 @@ static int display_logo(struct display_state *state) {
         crtc_state->crtc_w = hdisplay;
         crtc_state->crtc_h = vdisplay;
     } else {
+        // width 居中，如果大于则全屏
         if (crtc_state->src_w >= hdisplay) {
             crtc_state->crtc_x = 0;
             crtc_state->crtc_w = hdisplay;
@@ -721,7 +722,7 @@ static int display_logo(struct display_state *state) {
             crtc_state->crtc_x = (hdisplay - crtc_state->src_w) / 2;
             crtc_state->crtc_w = crtc_state->src_w;
         }
-
+        // height 居中，如果大于则全屏
         if (crtc_state->src_h >= vdisplay) {
             crtc_state->crtc_y = 0;
             crtc_state->crtc_h = vdisplay;
@@ -735,56 +736,6 @@ static int display_logo(struct display_state *state) {
     // 使能显示
     display_enable(state);
 
-    return 0;
-}
-
-int load_color(struct logo_info *logo, int color) {
-    struct bmp_header *header;
-    void *dst = NULL, *pdst;
-    int size;
-    unsigned char color_array[3];
-
-    printf("[YYF] %s:%s:%d (load color 0x%06X)\n", __FILE__, __func__, __LINE__, color);
-
-//    header = get_bmp_header("logo.bmp");
-//    if (!header)
-//        return -EINVAL;
-
-//    logo->bpp = get_unaligned_le16(&header->bit_count);
-    logo->bpp = 24;
-    printf("[YYF] color bpp:%d\n", logo->bpp);
-//    logo->width = get_unaligned_le32(&header->width);
-    logo->width = 720;
-    printf("[YYF] color width:%d\n", logo->width);
-//    logo->height = get_unaligned_le32(&header->height);
-    logo->height = 1080;
-    printf("[YYF] color height:%d\n", logo->height);
-//    header->file_size = 2765372;
-//    size = get_unaligned_le32(&header->file_size);
-    size = 2765372;
-    printf("[YYF] color size:%d\n", size);
-    logo->mode = ROCKCHIP_DISPLAY_FULLSCREEN;
-    printf("[YYF] color mode: ROCKCHIP_DISPLAY_FULLSCREEN\n");
-
-    pdst = get_display_buffer(size);
-    dst = pdst;
-
-    color_array[0] = (color >> 16) & 0xFF; // 取color的最高8位 B
-    color_array[1] = (color >> 8) & 0xFF; // 取color的次高8位 G
-    color_array[2] = color & 0xFF; // 取color的最低8位 R
-    printf("[YYF] R:0x%02X G:0x%02X B:0x%02X\n", color_array[2],color_array[1],color_array[0]);
-
-    for (int i = 0; i < size; i++) {
-        memcpy(pdst + i * 3, color_array, 3);
-    }
-
-//    logo->offset = get_unaligned_le32(&header->data_offset);
-    logo->offset = 54;
-    printf("[YYF] color offset: 0x%x,%d\n",logo->offset,logo->offset);
-    logo->ymirror = 1;
-    printf("[YYF] color ymirror: 0x%x,%d\n",logo->ymirror,logo->ymirror);
-
-    logo->mem = (u32)(unsigned long)dst;
     return 0;
 }
 
@@ -994,6 +945,66 @@ static int load_bmp_logo(struct logo_info *logo, const char *bmp_name) {
     unsigned long)dst;
 
     memcpy(&logo_cache->logo, logo, sizeof(*logo));
+
+    return 0;
+}
+
+int load_color(struct logo_info *logo, int color) {
+    /*
+     * [YYF] modify by load_bmp_logo
+     * 构造bmp格式数据，实现简单的颜色显示
+     */
+    void *pdst = NULL;
+    int size = 0;
+    unsigned char color_array[3] = {};
+    struct rockchip_logo_cache *color_cache;
+    printf("[YYF] %s:%s:%d (load color 0x%06X)\n", __FILE__, __func__, __LINE__, color);
+
+    char cache_name[8];
+    snprintf(cache_name, 8, "%d", color);
+
+    printf("[YYF] cache color name: %s\n", cache_name);
+
+    color_cache = find_or_alloc_logo_cache(cache_name);
+    if (!color_cache)
+        return -ENOMEM;
+
+    if (color_cache->logo.mem) {
+        printf("[YYF] find cache %s, reusing it.\n", cache_name);
+        memcpy(logo, &color_cache->logo, sizeof(*logo));
+        return 0;
+    }
+    printf("[YYF] no cache %s found, create it.\n", cache_name);
+
+    logo->bpp = 24;
+    printf("[YYF] color bpp:%d\n", logo->bpp);
+    logo->width = 720;
+    printf("[YYF] color width:%d\n", logo->width);
+    logo->height = 1280;
+    printf("[YYF] color height:%d\n", logo->height);
+    size = 2765372;
+    printf("[YYF] color size:%d\n", size);
+    // ROCKCHIP_DISPLAY_CENTER
+    // ROCKCHIP_DISPLAY_FULLSCREEN
+    logo->mode = ROCKCHIP_DISPLAY_FULLSCREEN;
+    printf("[YYF] color mode: ROCKCHIP_DISPLAY_FULLSCREEN\n");
+    logo->offset = 54;
+    printf("[YYF] color offset: 0x%x,%d\n",logo->offset,logo->offset);
+    logo->ymirror = 1;
+    printf("[YYF] color ymirror: 0x%x,%d\n",logo->ymirror,logo->ymirror);
+    /*创建GRB数据*/
+    pdst = get_display_buffer(size);
+
+    color_array[0] = (color >> 16) & 0xFF; // 取color的最高8位 - B
+    color_array[1] = (color >> 8) & 0xFF; // 取color的次高8位 - G
+    color_array[2] = color & 0xFF; // 取color的最低8位 - R
+    printf("[YYF] R:0x%02X G:0x%02X B:0x%02X\n", color_array[2],color_array[1],color_array[0]);
+    for (int i = 0; i < size; i++) {
+        memcpy(pdst + i * 3, color_array, 3);
+    }
+    logo->mem = (u32)(unsigned long)pdst;
+
+    memcpy(&color_cache->logo, logo, sizeof(*logo));
 
     return 0;
 }
