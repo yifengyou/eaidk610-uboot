@@ -156,16 +156,25 @@
 	#define CONFIG_CMD_ROCKCHIP_SHOW_BMP
 	#define CONFIG_CMD_LCD
     #define CONFIG_BOOTDELAY 99
+    #define CONFIG_CMD_RARP
+	#define CONFIG_CMD_NET
+/*  #define CONFIG_RK_GMAC
+    #define CONFIG_DESIGNWARE_ETH
+    #define CONFIG_DW_AUTONEG
+    #define CONFIG_PHY_REALTEK
+    #define CONFIG_PHY_ADDR		1
+    #define CONFIG_RGMII
+    #define CONFIG_PHYLIB
+*/
+	#define CONFIG_CMD_PXE
 
 	#define CONFIG_CMD_EXT4
 	#define CONFIG_CMD_PART
 	#define CONFIG_CMD_GPT
 	#define CONFIG_PARTITION_UUIDS
 	#define CONFIG_CMD_BDI
-	#define CONFIG_CMD_NET
 	#define CONFIG_MENU
 	#define CONFIG_CMD_BOOTMENU
-	#define CONFIG_CMD_PXE
 	#define CONFIG_CMD_FAT
 	#define CONFIG_CMD_ECHO
 	#define CONFIG_CMD_BMP
