@@ -147,8 +147,8 @@ fdt_addr_t fdtdec_get_addr_size_auto_parent(const void *blob, int parent,
 		int node, const char *prop_name, int index, fdt_size_t *sizep)
 {
 	int na, ns;
-
-	debug("%s: ", __func__);
+	
+	debug("%s\n", __func__);
 
 	na = fdt_address_cells(blob, parent);
 	if (na < 1) {
@@ -164,7 +164,7 @@ fdt_addr_t fdtdec_get_addr_size_auto_parent(const void *blob, int parent,
 		return FDT_ADDR_T_NONE;
 	}
 #endif
-	debug("na=%d, ns=%d, ", na, ns);
+	debug("%s na=%d, ns=%d, \n", __func__, na, ns);
 
 	return fdtdec_get_addr_size_fixed(blob, node, prop_name, index, na,
 					  ns, sizep);
@@ -182,7 +182,7 @@ fdt_addr_t fdtdec_get_addr_size_auto_noparent(const void *blob, int node,
 {
 	int parent;
 
-	debug("%s: ", __func__);
+	debug("%s\n", __func__);
 
 	parent = fdt_parent_offset(blob, node);
 	if (parent < 0) {

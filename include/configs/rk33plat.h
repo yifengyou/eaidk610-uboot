@@ -151,6 +151,7 @@
 /*
  * yyf: add extra cmd
  * */
+    #define DEBUG
 	#define CONFIG_CMD_YOU
 	#define CONFIG_CMD_YIFENGYOU
 	#define CONFIG_CMD_ROCKCHIP_SHOW_BMP

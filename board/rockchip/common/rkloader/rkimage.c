@@ -671,10 +671,12 @@ static const char* get_fdt_name(void)
 resource_content rkimage_load_fdt(const disk_partition_t* ptn)
 {
 	resource_content content;
+	/* fdt加载，关键问题，1.哪个分区， 2. 分区哪个文件*/
 	snprintf(content.path, sizeof(content.path), "%s", get_fdt_name());
 	content.load_addr = 0;
 
 #ifndef CONFIG_RESOURCE_PARTITION
+	/* 没有定义使用RESOURCE分区，则直接退出fdt加载 */
 	return content;
 #else
 	if (!ptn)
@@ -692,11 +694,30 @@ resource_content rkimage_load_fdt(const disk_partition_t* ptn)
 		hdr = memalign(ARCH_DMA_MINALIGN, blksz << 2);
 #endif
 		if (StorageReadLba(ptn->start, (void *) hdr, 1 << 2) != 0) {
+			debug("[YYF] read partion %s header 2 sector failed!", ptn->name);
 			return content;
 		}
+		debug("[YYF] read partion %s header 2 sector success!", ptn->name);
+		/*
+			struct boot_img_hdr {
+			unsigned char magic[BOOT_MAGIC_SIZE]; // 魔数，固定为 "ANDROID!"
+			unsigned kernel_size; // 内核大小，单位为字节
+			unsigned kernel_addr; // 内核加载地址
+			unsigned ramdisk_size; // ramdisk 大小，单位为字节
+			unsigned ramdisk_addr; // ramdisk 加载地址
+			unsigned second_size; // second 大小，单位为字节
+			unsigned second_addr; // second 加载地址
+			unsigned tags_addr; // 设备树标签地址
+			unsigned page_size; // 页大小，单位为字节
+			unsigned unused[2]; // 未使用的字段，保留为 0
+			unsigned char name[BOOT_NAME_SIZE]; // 设备名称
+			unsigned char cmdline[BOOT_ARGS_SIZE]; // 启动参数
+			unsigned id[8]; // 校验和或者其他标识信息
+			};
+		 */
 		if (!memcmp(hdr->magic, BOOT_MAGIC,
 					BOOT_MAGIC_SIZE) && hdr->second_size) {
-			//compute second data area's offset.
+			/* compute second data area's offset. */
 			offset = ptn->start + (hdr->page_size / blksz);
 			offset += ALIGN(hdr->kernel_size, hdr->page_size) / blksz;
 			offset += ALIGN(hdr->ramdisk_size, hdr->page_size) / blksz;
@@ -739,29 +760,27 @@ void rkimage_prepare_fdt(void)
 #ifdef CONFIG_RESOURCE_PARTITION
 	resource_content content = rkimage_load_fdt(get_disk_partition(BOOT_NAME));
 	if (!content.load_addr) {
-		debug("Failed to prepare fdt from boot!\n");
+		debug("Failed to prepare fdt from boot! Try next.\n");
 	} else {
-		printf("Load FDT from boot image.\n");
-
 		gd->fdt_blob = content.load_addr;
 		gd->fdt_size = content.content_size;
+		printf("Load FDT from boot image. addr:0x%p size:%d\n", gd->fdt_blob, gd->fdt_size);
 		return;
 	}
 #ifdef CONFIG_OF_FROM_RESOURCE
 	content = rkimage_load_fdt(get_disk_partition(RESOURCE_NAME));
 	if (!content.load_addr) {
-		debug("Failed to prepare fdt from resource!\n");
+		debug("Failed to prepare fdt from resource! Try next.\n");
 	} else {
-		printf("Load FDT from resource image.\n");
-
 		gd->fdt_blob = content.load_addr;
 		gd->fdt_size = content.content_size;
+		printf("Load FDT from resource image. addr:0x%p size:%d\n", gd->fdt_blob, gd->fdt_size);
 		return;
 	}
 #endif
 	content = rkimage_load_fdt(get_disk_partition(RECOVERY_NAME));
 	if (!content.load_addr) {
-		debug("Failed to prepare fdt from recovery!\n");
+		debug("Failed to prepare fdt from recovery! No more try, no fdt could be load.\n");
 	} else {
 		printf("Load FDT from recovery image.\n");
 

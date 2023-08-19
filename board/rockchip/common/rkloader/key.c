@@ -36,7 +36,7 @@ __maybe_unused static int rkkey_parse_powerkey_dt(const void *blob, struct fdt_g
 
 
 /*
-    固定GPIOA_0口作为烧写检测口,系统部分不能使用该口
+    鍥哄畾GPIOA_0鍙ｄ綔涓虹儳鍐欐娴嬪彛,绯荤粺閮ㄥ垎涓嶈兘浣跨敤璇ュ彛
 */
 static int GetPortState(key_config *key)
 {
@@ -46,7 +46,7 @@ static int GetPortState(key_config *key)
 	int_conf* ioint = &key->key.ioint;
 
 	if (key->type == KEY_AD) {
-		/* TODO: clk没有配置 */
+		/* TODO: clk娌℃湁閰嶇疆 */
 #if defined(CONFIG_RKCHIP_RK322XH)
 		rkclk_set_saradc_clk();
 #endif
@@ -113,11 +113,13 @@ __maybe_unused static void RockusbKeyInit(void)
 #if defined(CONFIG_RKCHIP_RK3036)
 	key_rockusb.type = KEY_INT;
 	key_rockusb.key.ioint.name = "rockusb_key";
-#if defined(CONFIG_PRODUCT_ECHO)
-	key_rockusb.key.ioint.gpio = (GPIO_BANK2 | GPIO_C7);
-#else
-	key_rockusb.key.ioint.gpio = (GPIO_BANK2 | GPIO_B0);
-#endif
+	
+	#if defined(CONFIG_PRODUCT_ECHO)
+		key_rockusb.key.ioint.gpio = (GPIO_BANK2 | GPIO_C7);
+	#else
+		key_rockusb.key.ioint.gpio = (GPIO_BANK2 | GPIO_B0);
+	#endif
+	
 	key_rockusb.key.ioint.flags = IRQ_TYPE_EDGE_FALLING;
 	key_rockusb.key.ioint.pressed_state = 0;
 	key_rockusb.key.ioint.press_time = 0;
@@ -129,6 +131,7 @@ __maybe_unused static void RockusbKeyInit(void)
 	key_rockusb.key.ioint.pressed_state = 0;
 	key_rockusb.key.ioint.press_time = 0;
 #else
+	
 	key_rockusb.type = KEY_AD;
 	key_rockusb.key.adc.index = KEY_ADC_CN;
 	key_rockusb.key.adc.keyValueLow = 0;
@@ -136,6 +139,8 @@ __maybe_unused static void RockusbKeyInit(void)
 	key_rockusb.key.adc.data = SARADC_BASE + 0;
 	key_rockusb.key.adc.stas = SARADC_BASE + 4;
 	key_rockusb.key.adc.ctrl = SARADC_BASE + 8;
+	
+	debug("[YYF] key_init->%s type:0x%x index:0x%x\n", __func__, key_rockusb.type, key_rockusb.key.adc.index);
 #endif
 }
 
@@ -149,6 +154,7 @@ __maybe_unused static void RecoveryKeyInit(void)
 	key_recovery.key.adc.data = SARADC_BASE + 0;
 	key_recovery.key.adc.stas = SARADC_BASE + 4;
 	key_recovery.key.adc.ctrl = SARADC_BASE + 8;
+	debug("[YYF] key_init->%s\n", __func__);
 }
 
 
@@ -161,12 +167,14 @@ __maybe_unused static void FastbootKeyInit(void)
 	key_fastboot.key.adc.data = SARADC_BASE + 0;
 	key_fastboot.key.adc.stas = SARADC_BASE + 4;
 	key_fastboot.key.adc.ctrl = SARADC_BASE + 8;
+	debug("[YYF] key_init->%s type:0x%x index:0x%x\n", __func__, key_fastboot.type,key_fastboot.key.adc.index);
 }
 
 
 __maybe_unused static void PowerKeyInit(void)
 {
 #ifdef CONFIG_OF_LIBFDT
+	/* 瀹氫箟锛岄渶杩愯 */
 	memset(&gPowerKey, 0, sizeof(struct fdt_gpio_state));
 	if (gd->fdt_blob != NULL)
 		rkkey_parse_powerkey_dt(gd->fdt_blob, &gPowerKey);
@@ -184,12 +192,13 @@ __maybe_unused static void PowerKeyInit(void)
 	key_power.key.ioint.flags = IRQ_TYPE_EDGE_FALLING;
 	key_power.key.ioint.pressed_state = 0;
 	key_power.key.ioint.press_time = 0;
+	debug("[YYF] key_init->%s type:0x%x\n", __func__, key_power.type);
 }
 
 
 __maybe_unused static void PowerHoldGpioInit(void)
 {
-
+	debug("[YYF] key_init->%s, no ops.\n", __func__);
 }
 
 __maybe_unused static void ChargeStateGpioInit(void)
@@ -198,6 +207,7 @@ __maybe_unused static void ChargeStateGpioInit(void)
 	charge_state_gpio.flags = 0;
 	charge_state_gpio.gpio = (GPIO_BANK0 | GPIO_B0);
 	gpio_direction_input(charge_state_gpio.gpio);
+	debug("[YYF] key_init->%s\n", __func__);
 }
 
 #ifdef CONFIG_RK_PWM_REMOTE
@@ -289,7 +299,9 @@ void key_init(void)
 	memset(&charge_state_gpio, 0, sizeof(gpio_conf));
 
 	RockusbKeyInit();
+	
 #if !(defined(CONFIG_RKCHIP_RK3036) || defined(CONFIG_RKCHIP_RK322X))
+	
 	FastbootKeyInit();
 	RecoveryKeyInit();
 	PowerKeyInit();

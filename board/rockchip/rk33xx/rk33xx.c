@@ -177,12 +177,14 @@ int board_late_init(void)
 	debug("board_late_init\n");
 
 	board_init_adjust_env();
-
+	
+	debug("load_disk_partitions\n");
 	load_disk_partitions();
 
 #ifdef CONFIG_RK_PWM_REMOTE
         RemotectlInit();
 #endif
+
 	debug("rkimage_prepare_fdt\n");
 	rkimage_prepare_fdt();
 

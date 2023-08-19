@@ -7,14 +7,14 @@
 #ifndef _PARAMETER_H_
 #define _PARAMETER_H_
 
-#define PARAMETER_NUM		8	/* parameterÎÄ¼şµÄ±¸·İ¸öÊı */
-#define PARAMETER_OFFSET	1024	/* Ã¿¸öparameterµÄÆ«ÒÆÁ¿ */
+#define PARAMETER_NUM		8	/* parameteræ–‡ä»¶çš„å¤‡ä»½ä¸ªæ•° */
+#define PARAMETER_OFFSET	1024	/* æ¯ä¸ªparameterçš„åç§»é‡ */
 
-#define MAX_LINE_CHAR		(1024*64) /* ParametersÓĞ¶à¸öLine×é³É£¬ÏŞÖÆÃ¿¸öLine×î´óÕ¼1024 Bytes */
-#define MAX_LOADER_PARAM	(128*512) /* ParametersËùÕ¼µÄ×î´óSectorÊı(º¬tag¡¢length¡¢crcµÈ) */
+#define MAX_LINE_CHAR		(1024*64) /* Parametersæœ‰å¤šä¸ªLineç»„æˆï¼Œé™åˆ¶æ¯ä¸ªLineæœ€å¤§å 1024 Bytes */
+#define MAX_LOADER_PARAM	(128*512) /* Parametersæ‰€å çš„æœ€å¤§Sectoræ•°(å«tagã€lengthã€crcç­‰) */
 #define PARM_TAG		0x4D524150
 #define MAGIC_CODE		0x00280028
-#define EATCHAR(x, c)		for (; *(x) == (c); (x)++) ; /* È¥³ı×Ö·û´®xÖĞ×ó±ßÎªcµÄ×Ö·û */
+#define EATCHAR(x, c)		for (; *(x) == (c); (x)++) ; /* å»é™¤å­—ç¬¦ä¸²xä¸­å·¦è¾¹ä¸ºcçš„å­—ç¬¦ */
 #define PART_NAME		32
 #define MAX_MTDID		64
 
@@ -53,14 +53,14 @@ typedef struct tagBootInfo {
 	uint32 atag_addr;
 	uint32 misc_offset;
 	uint32 kernel_load_addr;
-	uint32 boot_offset; /* ÒÔSectorÎªµ¥Î» */
-	uint32 recovery_offset; /* ÒÔSectorÎªµ¥Î» */
-	uint32 ramdisk_offset; /* ÒÔSectorÎªµ¥Î» */
-	uint32 ramdisk_size; /* ÒÔByteÎªµ¥Î» */
+	uint32 boot_offset; /* ä»¥Sectorä¸ºå•ä½ */
+	uint32 recovery_offset; /* ä»¥Sectorä¸ºå•ä½ */
+	uint32 ramdisk_offset; /* ä»¥Sectorä¸ºå•ä½ */
+	uint32 ramdisk_size; /* ä»¥Byteä¸ºå•ä½ */
 	uint32 ramdisk_load_addr;
 	uint32 is_kernel_in_boot;
 
-	uint32 check_mask; /* 00 - ²»Ğ£Ñé£¬ 01 - check kernel, 10 - check ramdisk, 11 - both check */
+	uint32 check_mask; /* 00 - ä¸æ ¡éªŒï¼Œ 01 - check kernel, 10 - check ramdisk, 11 - both check */
 	char cmd_line[MAX_LINE_CHAR];
 	cmdline_mtd_partition cmd_mtd;
 

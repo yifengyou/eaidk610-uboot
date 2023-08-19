@@ -37,25 +37,25 @@ static void GetIdblockDataNoRc4(char *fwbuf, int len)
 	P_RC4((unsigned char *)fwbuf, len);
 }
 
-/* ¼ÆËãa¿ÉÒÔ·Ö³É¶àÉÙ¸öb£¬Ê£Óà²¿·ÖËã1¸ö */
+/* è®¡ç®—aå¯ä»¥åˆ†æˆå¤šå°‘ä¸ªbï¼Œå‰©ä½™éƒ¨åˆ†ç®—1ä¸ª */
 #define CALC_UNIT(a, b)		((a > 0) ? ((a - 1) / b + 1) : (a))
-/* x MBµÄÊı¾İËùĞëµÄSectorÊı */
+/* x MBçš„æ•°æ®æ‰€é¡»çš„Sectoræ•° */
 #define MB2SECTOR(x)		(x * 1024 * (1024 / SECTOR_SIZE))
-/* x BytesËùĞëµÄSectorÊı */
+/* x Bytesæ‰€é¡»çš„Sectoræ•° */
 #define BYTE2SECTOR(x)		(CALC_UNIT(x, SECTOR_SIZE))
 #define INT2BCD(num)	(((num) % 10)|((((num) / 10) % 10) << 4) | ((((num) / 100) % 10) << 8) | ((((num) / 1000) % 10) << 12))
-/* x sectorsËùĞèµÄpageÊı */
+/* x sectorsæ‰€éœ€çš„pageæ•° */
 #define PAGEALIGN(x)		(CALC_UNIT(x, 4))
 
 /***********************************************************
  *  Copyright (C),2007-2008, Fuzhou Rockchip Co.,Ltd.
  *  Function name : BuildNFBlockStateMap()
  *  Author:         Meiyou Chen
- *  Description:    Éú³ÉÖ¸¶¨FlashµÄ¿é×´Ì¬±í
+ *  Description:    ç”ŸæˆæŒ‡å®šFlashçš„å—çŠ¶æ€è¡¨
  *  Calls:          TestBadBlock()
- *  Input:          ucFlashIndex - Ö¸¶¨µÄFlash, uiNFBlockLen - ´ıÉú³ÉµÄ¿éÊı
- *  Output:         NFBlockState - Flash¿é×´Ì¬±í
- *  Return:         TRUE - ³É¹¦	FALSE - Ê§°Ü
+ *  Input:          ucFlashIndex - æŒ‡å®šçš„Flash, uiNFBlockLen - å¾…ç”Ÿæˆçš„å—æ•°
+ *  Output:         NFBlockState - Flashå—çŠ¶æ€è¡¨
+ *  Return:         TRUE - æˆåŠŸ	FALSE - å¤±è´¥
  *  History:
  *           <author>      <time>     <version>       <desc>
  *          Meiyou Chen   07/12/20       1.0            ORG
@@ -66,7 +66,7 @@ static uint32 BuildNFBlockStateMap(uint8 ucFlashIndex, uint8 *NFBlockState, uint
 	return TRUE;
 }
 
-/***************** Éú³ÉÖ¸¶¨FlashµÄËùÓĞ¿éµÄ×´Ì¬±í *********************/
+/***************** ç”ŸæˆæŒ‡å®šFlashçš„æ‰€æœ‰å—çš„çŠ¶æ€è¡¨ *********************/
 static uint32 BuildFlashStateMap(uint8 ucFlashIndex, FlashInfo *pFlash)
 {
 	memset((void *)pFlash->BlockState, 0, 200);
@@ -77,12 +77,12 @@ static uint32 BuildFlashStateMap(uint8 ucFlashIndex, FlashInfo *pFlash)
  *  Copyright (C),2007-2008, Fuzhou Rockchip Co.,Ltd.
  *  Function name :	FindSerialBlocks()
  *  Author:		Meiyou Chen
- *  Description:	²éÕÒÖ¸¶¨Î»ÖÃ¿ªÊ¼µÄÁ¬Ğø¶à¸öºÃ¿éµÄÎ»ÖÃ
+ *  Description:	æŸ¥æ‰¾æŒ‡å®šä½ç½®å¼€å§‹çš„è¿ç»­å¤šä¸ªå¥½å—çš„ä½ç½®
  *  Calls:
- *  Input:		NFBlockState - ¿é×´Ì¬±í, iNFBlockLen - ¿é×´Ì¬±íËùº¬µÄ¿éµÄ¸öÊı,
- *			iBegin - ÆğÊ¼¿é, iLen - Á¬ĞøµÄ¿éÊı
+ *  Input:		NFBlockState - å—çŠ¶æ€è¡¨, iNFBlockLen - å—çŠ¶æ€è¡¨æ‰€å«çš„å—çš„ä¸ªæ•°,
+ *			iBegin - èµ·å§‹å—, iLen - è¿ç»­çš„å—æ•°
  *  Output:
- *  Return:		-1 - Ê§°Ü, ÆäËüÖµÖ¸Ê¾ÕÒµ½µÄÎ»ÖÃ
+ *  Return:		-1 - å¤±è´¥, å…¶å®ƒå€¼æŒ‡ç¤ºæ‰¾åˆ°çš„ä½ç½®
  *  History:
  *           <author>      <time>     <version>       <desc>
  *          Meiyou Chen   07/12/20       1.0            ORG
@@ -109,7 +109,7 @@ static int FindSerialBlocks(uint8 *NFBlockState, int iNFBlockLen, int iBegin, in
 	return iIndex;
 }
 
-/* Ñ°ÕÒID Block£¬¸Ã¿éÔÚÎ»ÓÚ×îÇ°ÃæµÄ20¸öºÃ¿éÖĞÈôÄÜÕÒµ½£¬ÔòÊÇÎÒÃÇµÄÆ¬×Ó£¬·ñÔò±ãÊÇÆäËü¹«Ë¾»òÕßĞÂÆ¬ */
+/* å¯»æ‰¾ID Blockï¼Œè¯¥å—åœ¨ä½äºæœ€å‰é¢çš„20ä¸ªå¥½å—ä¸­è‹¥èƒ½æ‰¾åˆ°ï¼Œåˆ™æ˜¯æˆ‘ä»¬çš„ç‰‡å­ï¼Œå¦åˆ™ä¾¿æ˜¯å…¶å®ƒå…¬å¸æˆ–è€…æ–°ç‰‡ */
 static int FindIDBlock(FlashInfo *pFlashInfo, int iStart, int *iPos)
 {
 #ifdef CONFIG_RK_NVME_BOOT_EN
@@ -137,7 +137,7 @@ static int FindIDBlock(FlashInfo *pFlashInfo, int iStart, int *iPos)
 		memcpy(&(tag), ucSpareData, sizeof(tag));
 		if (tag == (unsigned int)0xfcdc8c3b)  {
 			*iPos = i;
-			return 0;/* ÕÒµ½idb */
+			return 0;/* æ‰¾åˆ°idb */
 		} else {
 			continue;
 		}
@@ -179,9 +179,9 @@ static bool GenericIDBData(PBYTE pIDBlockData, UINT *needIdSectorNum)
 	RK28BOOT_HEAD *hdr = NULL;
 	int hasFlashInfo = 0;
 
-	/* cmy: »ñÈ¡ÒÑÓĞµÄIDBlock¼ÓÃÜÊı¾İ£¬²¢½øĞĞ½âÃÜ */
+	/* cmy: è·å–å·²æœ‰çš„IDBlockåŠ å¯†æ•°æ®ï¼Œå¹¶è¿›è¡Œè§£å¯† */
 
-	/* 1.¶Á³öÇ°4¸ösecotor */
+	/* 1.è¯»å‡ºå‰4ä¸ªsecotor */
 	uiSectorPerBlock = g_id_block_size;
 	memset((void *)pIDBlockData, 0, 4 * SECTOR_OFFSET);
 
@@ -191,7 +191,7 @@ static bool GenericIDBData(PBYTE pIDBlockData, UINT *needIdSectorNum)
 		return FALSE;
 	}
 
-	/* 2.IDB½âÃÜ */
+	/* 2.IDBè§£å¯† */
 	PRINT_I("DDDDD...\n");
 	for (i = 0; i < 4; i++)
 		if(i != 1)
@@ -210,14 +210,14 @@ static bool GenericIDBData(PBYTE pIDBlockData, UINT *needIdSectorNum)
 	}
 #endif
 
-	/* cmy: Ê¹ÓÃĞÂµÄloader´úÂë¸üĞÂIDBlockµÄÊı¾İ */
+	/* cmy: ä½¿ç”¨æ–°çš„loaderä»£ç æ›´æ–°IDBlockçš„æ•°æ® */
 	hdr = (RK28BOOT_HEAD *)g_pLoader;
 	pSec0->uiRc4Flag = hdr->ucRc4Flag;
 
 	PRINT_I("update loader data\n");
 
 	/* update page0 */
-	/* cmy: ¸üĞÂFlashData¼°FlashBootÄÚÈİ */
+	/* cmy: æ›´æ–°FlashDataåŠFlashBootå†…å®¹ */
 	pSec0->usFlashDataSize = PAGEALIGN(BYTE2SECTOR(hdr->uiFlashDataLen)) * 4;
 	pSec0->ucFlashBootSize = PAGEALIGN(BYTE2SECTOR(hdr->uiFlashBootLen)) * 4;
 
@@ -238,7 +238,7 @@ static bool GenericIDBData(PBYTE pIDBlockData, UINT *needIdSectorNum)
 
 	*needIdSectorNum = 4 + pSec0->ucFlashBootSize;
 
-	/* cmy: ¸üĞÂLoaderµÄ°æ±¾ĞÅÏ¢ */
+	/* cmy: æ›´æ–°Loaderçš„ç‰ˆæœ¬ä¿¡æ¯ */
 	PRINT_I("update date and version\n");
 	pSec1->usLoaderYear = INT2BCD(hdr->tmCreateTime.usYear);
 	pSec1->usLoaderDate = (INT2BCD(hdr->tmCreateTime.usMonth) << 8) | INT2BCD(hdr->tmCreateTime.usDate);
@@ -249,7 +249,7 @@ static bool GenericIDBData(PBYTE pIDBlockData, UINT *needIdSectorNum)
 		*needIdSectorNum += (PAGEALIGN(pSec1->usFlashDataLen) * 4);
 	}
 
-	/* cmy: ¶ÔĞÂµÄIDBlockÊı¾İ½øĞĞ´ò°ü */
+	/* cmy: å¯¹æ–°çš„IDBlockæ•°æ®è¿›è¡Œæ‰“åŒ… */
 	PRINT_I("EEEEE...\n");
 	for (i = 0; i < 4; i++)
 		if (i != 1)
@@ -298,7 +298,7 @@ static int get_rk28boot(uint8 * pLoader, bool dataLoaded)
 	return 0;
 }
 
-/* ·µ»ØÖµ£º true  ³É¹¦ alse Ê§°Ü */
+/* è¿”å›å€¼ï¼š true  æˆåŠŸ alse å¤±è´¥ */
 static bool WriteXIDBlock(USHORT *pSysBlockAddr, int iIDBCount, UCHAR *idBlockData, UINT uiIdSectorNum)
 {
 	int i = 0, ii = 0;
@@ -307,7 +307,7 @@ static bool WriteXIDBlock(USHORT *pSysBlockAddr, int iIDBCount, UCHAR *idBlockDa
 	PBYTE readBuf = (PBYTE)g_pReadBuf;
 	UINT sysSectorAddr = 0;
 	int iCMDRet;
-	int retry = 0; /* ÔÚĞ´IDBÊ§°Üºó£¬ÖØÊÔÒ»´Î */
+	int retry = 0; /* åœ¨å†™IDBå¤±è´¥åï¼Œé‡è¯•ä¸€æ¬¡ */
 
 	PRINT_I("Enter write idb\n");
 	for (i = 0; i < iIDBCount && (iIDBCount - write_failed) > 1; i++) {
@@ -337,7 +337,7 @@ static bool WriteXIDBlock(USHORT *pSysBlockAddr, int iIDBCount, UCHAR *idBlockDa
 				break;
 			}
 
-			/* ¶ÁÈ¡Êı¾İ */
+			/* è¯»å–æ•°æ® */
 			memset(readBuf, 0xff, MAX_WRITE_SECTOR * (512 + 16));
 			PRINT_D("read sector %08d ~ %08d\n", sysSectorAddr + iCount * MAX_WRITE_SECTOR, \
 				sysSectorAddr + iCount * MAX_WRITE_SECTOR + uiWriteSector - 1);
@@ -346,7 +346,7 @@ static bool WriteXIDBlock(USHORT *pSysBlockAddr, int iIDBCount, UCHAR *idBlockDa
 				PRINT_E("read failed %d\n", iCMDRet);
 				break;
 			}
-			// Ğ£ÑéËùĞ´µÄÊı¾İ
+			// æ ¡éªŒæ‰€å†™çš„æ•°æ®
 			PRINT_D("check data...\n");
 			for (ii = 0; ii < uiWriteSector; ii++) {
 				if (0 != memcmp(writeBuf + 528 * ii, readBuf + 528 * ii, 512)) {
@@ -370,12 +370,12 @@ static bool WriteXIDBlock(USHORT *pSysBlockAddr, int iIDBCount, UCHAR *idBlockDa
 		}
 	}
 
-	/* cmy: Èç¹ûĞ´ÖÁÉÙ³É¹¦ÁËÒ»¸ö£¬·µ»Øtrue
-		Èç¹ûĞ´µ½Ê£ÏÂ×îºóÒ»¸öÁË¶¼Ã»ÓĞĞ´³É¹¦£¬·µ»Øfalse */
+	/* cmy: å¦‚æœå†™è‡³å°‘æˆåŠŸäº†ä¸€ä¸ªï¼Œè¿”å›true
+		å¦‚æœå†™åˆ°å‰©ä¸‹æœ€åä¸€ä¸ªäº†éƒ½æ²¡æœ‰å†™æˆåŠŸï¼Œè¿”å›false */
 	return i == iIDBCount;
 }
 
-// cmy: Éı¼¶loader
+// cmy: å‡çº§loader
 int rkidb_update_loader(bool dataLoaded)
 {
 	int iRet = 0, iResult;
@@ -384,9 +384,9 @@ int rkidb_update_loader(bool dataLoaded)
 
 	PRINT_E("update loader\n");
 
-	FW_ReIntForUpdate(); /* Éı¼¶Ö®Ç°¼ì²éidblkÊı¾İÊÇÕıÈ·µÄ */
+	FW_ReIntForUpdate(); /* å‡çº§ä¹‹å‰æ£€æŸ¥idblkæ•°æ®æ˜¯æ­£ç¡®çš„ */
 
-	/* ´ÓMISC·ÖÇøÖĞÈ¡³örk28loader(L).binµÄÄÚÈİ£¬´æ·ÅÔÚg_pLoader */
+	/* ä»MISCåˆ†åŒºä¸­å–å‡ºrk28loader(L).binçš„å†…å®¹ï¼Œå­˜æ”¾åœ¨g_pLoader */
 	PRINT_I("get loader\n");
 	iResult = get_rk28boot(g_pLoader, dataLoaded);
 	if (iResult) {
@@ -397,7 +397,7 @@ int rkidb_update_loader(bool dataLoaded)
 
 	PRINT_E("ver %x %x\n",internal_boot_bloader_ver, update_boot_bloader_ver);
 	PRINT_I("SecPerBlock = %d\n", g_id_block_size);
-	/**************1.´´½¨×´Ì¬±í******************/
+	/**************1.åˆ›å»ºçŠ¶æ€è¡¨******************/
 	PRINT_I("create flash block map\n");
 	if (!BuildFlashStateMap(0, &m_flashInfo)) {
 		PRINT_E("failed1\n");
@@ -405,14 +405,14 @@ int rkidb_update_loader(bool dataLoaded)
 		goto Exit_update;
 	}
 
-	/**************2.²éÕÒËùÓĞIDB******************/
+	/**************2.æŸ¥æ‰¾æ‰€æœ‰IDB******************/
 	PRINT_I("Search all id block...\n");
 	iIDBCount = FindAllIDB();
 	if (iIDBCount <= 0) {
 		PRINT_E("failed2\n");
 		iRet = -2;
 		goto Exit_update;
-	} else if (iIDBCount == 1) { /* ÖÁÉÙ±£Ö¤ÓĞÒ»¿éidbÊÇÕı³£µÄ */
+	} else if (iIDBCount == 1) { /* è‡³å°‘ä¿è¯æœ‰ä¸€å—idbæ˜¯æ­£å¸¸çš„ */
 		//PRINT_E("Remain last one IDBlock!\n");
 		iRet = -3;
 		goto Exit_update;
@@ -422,7 +422,7 @@ int rkidb_update_loader(bool dataLoaded)
 	//for (i = 0; i < iIDBCount; i++)
 	//    PRINT_I("%d\n", g_IDBlockOffset[i]);
 
-	/**************3.¸üĞÂIDB******************/
+	/**************3.æ›´æ–°IDB******************/
 	PRINT_I("generic id block\n");
 	if (!GenericIDBData(g_pIDBlock, &uiNeedIdSectorNum)) {
 		PRINT_E("failed3\n");
@@ -430,7 +430,7 @@ int rkidb_update_loader(bool dataLoaded)
 		goto Exit_update;
 	}
 
-	/**************4.Ğ´ÈëIDB******************/
+	/**************4.å†™å…¥IDB******************/
 	PRINT_I("write id block\n");
 	if (!WriteXIDBlock(g_IDBlockOffset, iIDBCount, g_pIDBlock, uiNeedIdSectorNum))
 		iRet = -5;

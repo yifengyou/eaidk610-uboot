@@ -169,6 +169,7 @@ static int mtdpart_parse(const char *string, cmdline_mtd_partition *this_mtd)
 
 static int parse_cmdline(PBootInfo info)
 {
+	/* cmdline çš„mtdä¿¡æ¯å­˜æ”¾åœ¨info->cmd_mtd */
 	info->cmd_mtd.num_parts = 0;
 	info->cmd_mtd.mtd_id[0] = '\0';
 
@@ -271,9 +272,9 @@ static void ParseLine(PBootInfo info, char *line)
 }
 
 /*
- * param  ×Ö·û´®
- * line   »ñÈ¡µ½µÄÒ»ĞĞÊı¾İ´æ·ÅÔÚ¸Ã±äÁ¿ÖĞ
- * ·µ»ØÖµ Æ«ÒÆµÄÎ»ÖÃ
+ * param  å­—ç¬¦ä¸²
+ * line   è·å–åˆ°çš„ä¸€è¡Œæ•°æ®å­˜æ”¾åœ¨è¯¥å˜é‡ä¸­
+ * è¿”å›å€¼ åç§»çš„ä½ç½®
  */
 static char *getline(char *param, int32 len, char *line)
 {
@@ -294,7 +295,8 @@ static char *getline(char *param, int32 len, char *line)
 int CheckParam(PLoaderParam pParam)
 {
 	uint32 crc = 0;
-
+	// #define PARM_TAG      0x4D524150
+	// #define MAGIC_CODE    0x00280028
 	if (pParam->tag != PARM_TAG) {
 		printf("W: Invalid Parameter's tag (0x%08X)!\n", (unsigned int)pParam->tag);
 		return -2;
@@ -320,8 +322,10 @@ int32 GetParam(uint32 param_addr, void *buf)
 	int read_sec = MAX_LOADER_PARAM >> 9;
 	int i = 0;
 
-	printf("GetParam\n");
+	printf("GetParam from param_addr:0x%x to buf:0x%p\n", param_addr, buf);
 
+	// #define PARAMETER_NUM        8      parameteræ–‡ä»¶çš„å¤‡ä»½ä¸ªæ•°
+	// #define PARAMETER_OFFSET	    1024   æ¯ä¸ªparameterçš„åç§»é‡
 	for (i = 0; i < PARAMETER_NUM; i++) {
 		if (StorageReadLba(param_addr + i * PARAMETER_OFFSET, buf, read_sec) == 0) {
 			if (CheckParam(param) == 0) {
@@ -340,7 +344,7 @@ int32 GetParam(uint32 param_addr, void *buf)
 	return -3;
 }
 
-/* Ò»ĞĞ×î¶à1024Bytes */
+/* ä¸€è¡Œæœ€å¤š1024Bytes */
 void ParseParam(PBootInfo info, char *param, uint32 len)
 {
 	char *prev_param = NULL;
@@ -348,13 +352,14 @@ void ParseParam(PBootInfo info, char *param, uint32 len)
 	int32 remain_len = (int32)len;
 
 	while(remain_len > 0) {
-		/* »ñÈ¡Ò»ĞĞÊı¾İ(²»º¬»Ø³µ»»ĞĞ·û£¬ÇÒ×ó±ß²»º¬¿Õ¸ñ) */
+		/* è·å–ä¸€è¡Œæ•°æ®(ä¸å«å›è½¦æ¢è¡Œç¬¦ï¼Œä¸”å·¦è¾¹ä¸å«ç©ºæ ¼) */
 		prev_param = param;
 		param = getline(param, remain_len, line);
 		remain_len -= (param - prev_param);
 
-		/* È¥³ı¿ÕĞĞ¼°×¢ÊÍĞĞ */
+		/* å»é™¤ç©ºè¡ŒåŠæ³¨é‡Šè¡Œ */
 		if ((line[0] != 0) && (line[0] != '#'))
+			/* è§£æå‚æ•° */
 			ParseLine(info, line);
 	}
 }
@@ -392,8 +397,12 @@ int load_disk_partitions(void)
 #else
 	param = (PLoaderParam)memalign(ARCH_DMA_MINALIGN, MAX_LOADER_PARAM * PARAMETER_NUM);
 #endif
+	/* int32 GetParam(uint32 param_addr, void *buf) */
+	/* å‡†å¤‡ç©ºé—´ç”¨äºåŠ è½½paramä¿¡æ¯ */
 	if (!GetParam(0, param)) {
+		/* é€è¡Œè§£æå‚æ•°ï¼Œèµ‹å€¼å…¨å±€å˜é‡gBootInfo */
 		ParseParam(&gBootInfo, param->parameter, param->length);
+		debug("[YYF] parameter(len=%d):\n\n%s\n\n", param->length, param->parameter);
 		cmd_mtd = &(gBootInfo.cmd_mtd);
 		for(i = 0; i < cmd_mtd->num_parts; i++) {
 			if (i >= CONFIG_MAX_PARTITIONS) {
