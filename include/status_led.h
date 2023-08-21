@@ -19,9 +19,9 @@
 
 #ifdef CONFIG_STATUS_LED
 
-#define STATUS_LED_OFF		0
-#define STATUS_LED_BLINKING	1
-#define STATUS_LED_ON		2
+#define STATUS_LED_OFF              0
+#define STATUS_LED_BLINKING         1
+#define STATUS_LED_ON               2
 
 void status_led_tick (unsigned long timestamp);
 void status_led_set  (int led, int state);
@@ -213,6 +213,47 @@ void status_led_set  (int led, int state);
 #define STATUS_LED_STATE1	STATUS_LED_OFF
 
 #define STATUS_LED_BOOT		0	/* LED 0 used for boot status */
+
+
+
+
+/* [YYF] extra add start ------------*/
+/*****  EAIDK610  *********************************************************/
+#elif defined(CONFIG_ROCKCHIP)
+
+typedef unsigned long led_id_t;
+
+/* system_work_led1 蓝色 */
+# define STATUS_LED_BIT1           0x002
+# define STATUS_LED_PERIOD1        (CONFIG_SYS_HZ / 2)
+# define STATUS_LED_STATE1         STATUS_LED_OFF
+/* system_work_led2 红色 */
+# define STATUS_LED_BIT2           0x00c
+# define STATUS_LED_PERIOD2        (CONFIG_SYS_HZ / 2)
+# define STATUS_LED_STATE2         STATUS_LED_OFF
+/* system_work_led3 绿色 */
+# define STATUS_LED_BIT3           0x00d
+# define STATUS_LED_PERIOD3        (CONFIG_SYS_HZ / 2)
+# define STATUS_LED_STATE3         STATUS_LED_OFF
+/* wifi_work_led 橙色 */
+# define STATUS_LED_BIT4           0x21b
+# define STATUS_LED_PERIOD4        (CONFIG_SYS_HZ / 2)
+# define STATUS_LED_STATE4         STATUS_LED_OFF
+/* bt_work_led 蓝色 */
+# define STATUS_LED_BIT5           0x21c
+# define STATUS_LED_PERIOD5        (CONFIG_SYS_HZ / 2)
+# define STATUS_LED_STATE5         STATUS_LED_OFF
+
+
+# define STATUS_LED_ACTIVE          0 /* LED on for bit == 0 */
+# define STATUS_LED_BOOT            0 /* 第0个(1个)用于boot状态灯 */
+
+extern void __led_toggle (led_id_t mask);
+extern int __led_get (led_id_t mask);
+extern void __led_init (led_id_t mask, int state);
+extern void __led_set (led_id_t mask, int state);
+
+/* [YYF] extra add end ------------*/
 
 #elif defined(CONFIG_BOARD_SPECIFIC_LED)
 /* led_id_t is unsigned long mask */

@@ -143,6 +143,7 @@ int saveenv(void)
 	struct mmc *mmc = find_mmc_device(CONFIG_SYS_MMC_ENV_DEV);
 	u32	offset;
 	int	ret, copy = 0;
+	
 
 	if (init_mmc_for_env(mmc))
 		return 1;

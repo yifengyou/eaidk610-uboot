@@ -389,7 +389,7 @@ static void SecureNSModeInit(void)
 			}
 #endif
 			if (gDrmKeyInfo.publicKeyLen == 0) {
-				/* Ã»ÓĞ¹«Ô¿£¬ÊÇµÚÒ»´Î²Å¿ªÆôkeyBoxEnable */
+				/* æ²¡æœ‰å…¬é’¥ï¼Œæ˜¯ç¬¬ä¸€æ¬¡æ‰å¼€å¯keyBoxEnable */
 				gDrmKeyInfo.publicKeyLen = 0x100;
 				ftl_memcpy(gDrmKeyInfo.publicKey, RSK_KEY, 0x104);
 				updataFlag = 1;
@@ -401,12 +401,12 @@ static void SecureNSModeInit(void)
 				gDrmKeyInfo.secureBootLock = 1;
 #endif
 			} else if (memcmp(gDrmKeyInfo.publicKey, RSK_KEY, 0x100) != 0) {
-				/* Èç¹ûÒÑ¾­´æÔÚ¹«Ô¿£¬²¢ÇÒ¹«Ô¿±»Ìæ»»ÁË£¬ÄÇÃ´¹Ø±Õ */
+				/* å¦‚æœå·²ç»å­˜åœ¨å…¬é’¥ï¼Œå¹¶ä¸”å…¬é’¥è¢«æ›¿æ¢äº†ï¼Œé‚£ä¹ˆå…³é—­ */
 				if (memcmp(gDrmKeyInfo.publicKey + 4, RSK_KEY, 0x100) == 0) {
 					ftl_memcpy(gDrmKeyInfo.publicKey, RSK_KEY, 0x104);
 					updataFlag = 1;
 				} else {
-					gDrmKeyInfo.keyBoxEnable = 0; /* ÔİÊ±²»ÆôÓÃÕâ¸ö¹¦ÄÜ */
+					gDrmKeyInfo.keyBoxEnable = 0; /* æš‚æ—¶ä¸å¯ç”¨è¿™ä¸ªåŠŸèƒ½ */
 					SecureBootEn = 0;
 					RkPrintf("E:pKey!\n");
 				}
@@ -421,7 +421,7 @@ static void SecureNSModeInit(void)
 		if (updataFlag) {
 			updataFlag = 0;
 			if (FTL_ERROR == StorageSysDataStore(1, &gDrmKeyInfo)) {
-				;/* TODO:SysDataStoreÒì³£´¦Àí */
+				;/* TODO:SysDataStoreå¼‚å¸¸å¤„ç† */
 			}
 		}
 	}
@@ -431,9 +431,9 @@ static void SecureNSModeInit(void)
 		if (gBootConfig.bootTag != 0x44535953) {
 			gBootConfig.bootTag = 0x44535953;
 			gBootConfig.bootLen = 504;
-			gBootConfig.bootMedia = 0; /* TODO: boot Ñ¡Ôñ */
+			gBootConfig.bootMedia = 0; /* TODO: boot é€‰æ‹© */
 			gBootConfig.BootPart = 0;
-			gBootConfig.secureBootEn = 0; /* SecureBootEn, Ä¬ÈÏdisable */
+			gBootConfig.secureBootEn = 0; /* SecureBootEn, é»˜è®¤disable */
 			updataFlag = 1;
 		} else {
 #ifndef SECURE_BOOT_ENABLE_ALWAY
@@ -445,7 +445,7 @@ static void SecureNSModeInit(void)
 		if (updataFlag) {
 			updataFlag = 0;
 			if (FTL_ERROR == StorageSysDataStore(0, &gBootConfig)) {
-				;/* TODO:SysDataStoreÒì³£´¦Àí */
+				;/* TODO:SysDataStoreå¼‚å¸¸å¤„ç† */
 			}
 		}
 	} else {

@@ -397,6 +397,9 @@ int load_disk_partitions(void)
 #else
 	param = (PLoaderParam)memalign(ARCH_DMA_MINALIGN, MAX_LOADER_PARAM * PARAMETER_NUM);
 #endif
+	
+	debug("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
+	
 	/* int32 GetParam(uint32 param_addr, void *buf) */
 	/* 准备空间用于加载param信息 */
 	if (!GetParam(0, param)) {

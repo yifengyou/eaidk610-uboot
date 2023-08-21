@@ -31,9 +31,9 @@
 #define     FTL_NO_FLASH            -2
 #define     FTL_NO_IDB              -3
 
-#define     DATA_LEN            (1024*8*2/4)              //Êı¾İ¿éµ¥Î»word
-#define     SPARE_LEN           (32*8*2/4)               //Ğ£ÑéÊı¾İ³¤¶È
-#define     PAGE_LEN            (DATA_LEN+SPARE_LEN)    //Ã¿¸öÊı¾İµ¥Î»µÄ³¤¶È
+#define     DATA_LEN            (1024*8*2/4)              //æ•°æ®å—å•ä½word
+#define     SPARE_LEN           (32*8*2/4)               //æ ¡éªŒæ•°æ®é•¿åº¦
+#define     PAGE_LEN            (DATA_LEN+SPARE_LEN)    //æ¯ä¸ªæ•°æ®å•ä½çš„é•¿åº¦
 
 #define EMMC_VENDOR_PART_START		(1024 * 7)
 #define NAND_VENDOR_PART_START		0
@@ -126,7 +126,7 @@ typedef uint32 (*Memory_read_fat_bbt)(uint8 *pbbt, uint32 die, uint32 len);
 typedef struct MEM_FUN_Tag
 {
 	uint16 id;
-	uint16 flag; // ´«µİ¸økernelµÄ£¬È·¶¨´ÓÄÄÀïÒıµ¼µ½flashµÄ
+	uint16 flag; // ä¼ é€’ç»™kernelçš„ï¼Œç¡®å®šä»å“ªé‡Œå¼•å¯¼åˆ°flashçš„
 	uint32 Valid;
 	Memory_Init Init;
 	Memory_ReadID ReadId;
@@ -147,15 +147,15 @@ typedef struct MEM_FUN_Tag
 } MEM_FUN_T, pMEM_FUN_T;
 
 
-typedef PACKED1  struct  _FLASH_INFO//ĞèÒª¼Ó__packed»ò×ÅÉùÃ÷Ê±4¶ÔÆë²»È»³ÌĞò¿ÉÄÜÔÚÓĞÅĞ¶ÏµÄÊ±ºò³öÏÖÒì³£
+typedef PACKED1  struct  _FLASH_INFO//éœ€è¦åŠ __packedæˆ–ç€å£°æ˜æ—¶4å¯¹é½ä¸ç„¶ç¨‹åºå¯èƒ½åœ¨æœ‰åˆ¤æ–­çš„æ—¶å€™å‡ºç°å¼‚å¸¸
 {
-	uint32  FlashSize;          //£¨SectorÎªµ¥Î»£©   4Byte
-	uint16  BlockSize;          //£¨SectorÎªµ¥Î»£©   2Byte
-	uint8   PageSize;           // (SectorÎªµ¥Î»£©    1Byte
-	uint8   ECCBits;            //£¨bitsÎªµ¥Î»£©    1Byte
+	uint32  FlashSize;          //ï¼ˆSectorä¸ºå•ä½ï¼‰   4Byte
+	uint16  BlockSize;          //ï¼ˆSectorä¸ºå•ä½ï¼‰   2Byte
+	uint8   PageSize;           // (Sectorä¸ºå•ä½ï¼‰    1Byte
+	uint8   ECCBits;            //ï¼ˆbitsä¸ºå•ä½ï¼‰    1Byte
 	uint8   AccessTime;
 	uint8   ManufacturerName;   // 1Byte
-	uint8   FlashMask;          // Ã¿Ò»bit´ú±íÄÇ¸öÆ¬Ñ¡ÊÇ·ñÓĞFLASH
+	uint8   FlashMask;          // æ¯ä¸€bitä»£è¡¨é‚£ä¸ªç‰‡é€‰æ˜¯å¦æœ‰FLASH
 }PACKED2 FLASH_INFO, *pFLASH_INFO;
 
 
@@ -193,7 +193,7 @@ typedef struct LOADER_MEM_API_Tag
 	Memory_erase_data erase_data;
 } LOADER_MEM_API_T, *pLOADER_MEM_API_T;
 
-//1È«¾Ö±äÁ¿
+//1å…¨å±€å˜é‡
 #undef	EXT
 #ifdef	IN_STORAGE
 #define	EXT

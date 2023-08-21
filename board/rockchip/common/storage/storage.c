@@ -217,7 +217,7 @@ static MEM_FUN_T *memFunTab[] =
 int32 StorageInit(void)
 {
 	uint32 memdev;
-
+	debug("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
 	memset((uint8*)&g_FlashInfo, 0, sizeof(g_FlashInfo));
 	for(memdev=0; memdev<MAX_MEM_DEV; memdev++)
 	{
@@ -273,10 +273,10 @@ uint32 FW_StorageGetValid(void)
 }
 
 /***************************************************************************
-º¯ÊýÃèÊö:»ñÈ¡ FTL Õý³£²Á³ýµÄ blockºÅ
-Èë¿Ú²ÎÊý:
-³ö¿Ú²ÎÊý:
-µ÷ÓÃº¯Êý:
+å‡½æ•°æè¿°:èŽ·å– FTL æ­£å¸¸æ“¦é™¤çš„ blockå·
+å…¥å£å‚æ•°:
+å‡ºå£å‚æ•°:
+è°ƒç”¨å‡½æ•°:
 ***************************************************************************/
 uint32 FW_GetCurEraseBlock(void)
 {
@@ -291,10 +291,10 @@ uint32 FW_GetCurEraseBlock(void)
 }
 
 /***************************************************************************
-º¯ÊýÃèÊö:»ñÈ¡ FTL ×ÜblockÊý
-Èë¿Ú²ÎÊý:
-³ö¿Ú²ÎÊý:
-µ÷ÓÃº¯Êý:
+å‡½æ•°æè¿°:èŽ·å– FTL æ€»blockæ•°
+å…¥å£å‚æ•°:
+å‡ºå£å‚æ•°:
+è°ƒç”¨å‡½æ•°:
 ***************************************************************************/
 uint32 FW_GetTotleBlk(void)
 {
@@ -453,7 +453,9 @@ uint32 StorageVendorSysDataStore(uint32 offset, uint32 len, uint32 *Buf)
 int StorageReadFlashInfo(void *pbuf)
 {
 	int ret = FTL_ERROR;
-
+	
+	debug("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
+	
 	if(gpMemFun->ReadInfo)
 	{
 		gpMemFun->ReadInfo(pbuf);

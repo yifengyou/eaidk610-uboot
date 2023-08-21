@@ -49,7 +49,9 @@ static inline int write_env(unsigned long size,
 	uint blk_start, blk_cnt, i;
 	blk_start   = ALIGN(offset, RK_BLK_SIZE) / RK_BLK_SIZE;
 	blk_cnt     = ALIGN(size, RK_BLK_SIZE) / RK_BLK_SIZE;
-
+	
+	debug("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
+	
 	for (i = 0;i < blk_cnt;i++)
 	{
 		if(StorageUbootSysDataStore(blk_start + i,
@@ -69,6 +71,8 @@ int saveenv(void)
 	ssize_t	len;
 	char	*res;
 
+	debug("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
+	
 	res = (char *)env_new->data;
 	len = hexport_r(&env_htab, '\0', 0, &res, ENV_SIZE, 0, NULL);
 	if (len < 0) {

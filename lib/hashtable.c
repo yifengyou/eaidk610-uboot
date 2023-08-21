@@ -595,7 +595,9 @@ ssize_t hexport_r(struct hsearch_data *htab, const char sep, int flag,
 	char *res, *p;
 	size_t totlen;
 	int i, n;
-
+	
+	debug("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
+	
 	/* Test for correct arguments.  */
 	if ((resp == NULL) || (htab == NULL)) {
 		__set_errno(EINVAL);

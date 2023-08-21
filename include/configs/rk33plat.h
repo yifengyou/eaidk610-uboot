@@ -156,6 +156,14 @@
 	#define CONFIG_CMD_YIFENGYOU
 	#define CONFIG_CMD_ROCKCHIP_SHOW_BMP
 	#define CONFIG_CMD_LCD
+
+	/*-----------------------------------------------------------------------
+	 * Definitions for status LED
+	 */
+	#define CONFIG_STATUS_LED
+	#define CONFIG_BOARD_SPECIFIC_LED
+	#define CONFIG_CMD_LED
+	
     #define CONFIG_BOOTDELAY 99
     #define CONFIG_CMD_RARP
 	#define CONFIG_CMD_NET

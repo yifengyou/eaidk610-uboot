@@ -19,6 +19,7 @@ static int sunxi_gpio_output(u32 pin, u32 val)
 	u32 dat;
 	u32 bank = GPIO_BANK(pin);
 	u32 num = GPIO_NUM(pin);
+	
 	struct sunxi_gpio *pio = BANK_TO_GPIO(bank);
 
 	dat = readl(&pio->dat);

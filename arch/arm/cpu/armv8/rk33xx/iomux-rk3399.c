@@ -164,6 +164,7 @@ static uint32 grf_gpio4b_iomux;
 __maybe_unused
 void rk_iomux_sdcard_save(void)
 {
+	debug("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
 	debug("rk save sdcard iomux config.\n");
 	grf_gpio4b_iomux = grf_readl(GRF_GPIO4B_IOMUX);
 	grf_gpio4b_iomux &= ((3 << 10) | (3 << 8) | (3 << 6) | (3 << 4) | (3 << 2) | (3 << 0));

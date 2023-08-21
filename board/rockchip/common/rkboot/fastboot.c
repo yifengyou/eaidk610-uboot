@@ -194,7 +194,9 @@ int board_fbt_key_pressed(void)
 	enum fbt_reboot_type frt = FASTBOOT_REBOOT_UNKNOWN;
 	int vbus = 0;
 	int ir_keycode = 0;
-
+	
+	debug("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
+	
 #ifdef CONFIG_CMD_ROCKUSB
 	vbus = GetVbus();
 #endif
@@ -220,16 +222,19 @@ int board_fbt_key_pressed(void)
 		printf("rockusb key pressed.\n");
 #if defined(CONFIG_RK_PWM_REMOTE)
 		/* close remote intterrupt after rockusb key pressed */
+		/* 没有定义 */
 		RemotectlDeInit();
 #endif
 #ifdef CONFIG_CMD_ROCKUSB
 		/* rockusb key press, set flag = 1 for rockusb timeout check */
+		/* 定义 */
 		if (do_rockusb(NULL, 1, 0, NULL) == 1) {
 			/* if rockusb return 1, boot recovery */
 			frt = FASTBOOT_REBOOT_RECOVERY;
 		}
 #endif
 #ifdef CONFIG_CMD_FASTBOOT
+	/* 定义 */
 	} else if (boot_fastboot && (vbus != 0)) {
 		printf("fastboot key pressed.\n");
 		frt = FASTBOOT_REBOOT_FASTBOOT;
@@ -479,8 +484,8 @@ bool board_fbt_exit_uboot_charge(void)
  */
 void board_fbt_preboot(void)
 {
-    printf ("[YYF] %s:%s:%d (fastboot board_fbt_preboot)\n", __FILE__, __func__, __LINE__);
-    enum fbt_reboot_type frt;
+	debug("[YYF] %s:%s:%d (fastboot board_fbt_preboot)\n", __FILE__, __func__, __LINE__);
+	enum fbt_reboot_type frt;
 	__maybe_unused bool charge_enable = false;
 #ifdef CONFIG_UBOOT_CHARGE
 	int charge_node;			/*device node*/

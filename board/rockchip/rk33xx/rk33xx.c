@@ -51,6 +51,7 @@ void board_lmb_reserve(struct lmb *lmb) {
 
 int board_storage_init(void)
 {
+	debug("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
 	if (StorageInit() == 0) {
 		puts("storage init OK!\n");
 		return 0;
@@ -119,7 +120,9 @@ int arch_early_init_r(void)
 static void board_init_adjust_env(void)
 {
 	bool change = false;
-
+	
+	debug("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
+	
 	char *s = getenv("bootdelay");
 	if (s != NULL) {
 		unsigned long bootdelay = 0;
@@ -169,27 +172,67 @@ static void board_init_adjust_env(void)
 	}
 }
 
+#define CONFIG_GPIO_LED_INVERTED_TABLE {}
+static led_id_t gpio_led_inv[] = CONFIG_GPIO_LED_INVERTED_TABLE;
+
+static int gpio_led_gpio_value(led_id_t mask, int state)
+{
+	int i, gpio_value = (state == STATUS_LED_ON);
+	
+	for (i = 0; i < ARRAY_SIZE(gpio_led_inv); i++) {
+		if (gpio_led_inv[i] == mask)
+			gpio_value = !gpio_value;
+	}
+	return gpio_value;
+}
+
+void __led_init(led_id_t mask, int state)
+{
+	int gpio_value;
+	if (gpio_request(mask, "gpio_led") != 0) {
+			printf("%s: failed requesting GPIO%lu!\n", __func__, mask);
+			return;
+	}
+
+//	gpio_value = gpio_led_gpio_value(mask, state);
+	gpio_direction_output(mask, state);
+	debug("[YYF] %s:%s:%d gpio:0x%x state:0x%x\n", __FILE__, __func__, __LINE__, mask, state);
+}
+
+void __led_set(led_id_t mask, int state)
+{
+	gpio_set_value(mask, state);
+	debug("[YYF] %s:%s:%d gpio:0x%x set state:0x%x\n", __FILE__, __func__, __LINE__, mask, state);
+}
+
+int __led_get(led_id_t mask)
+{
+	return gpio_get_value(mask);
+}
+
+void __led_toggle(led_id_t mask)
+{
+	gpio_set_value(mask, !gpio_get_value(mask));
+	debug("[YYF] %s:%s:%d gpio:0x%x set state:0x%x\n", __FILE__, __func__, __LINE__, mask, !gpio_get_value(mask));
+}
 
 #ifdef CONFIG_BOARD_LATE_INIT
 extern char bootloader_ver[24];
 int board_late_init(void)
 {
-	debug("board_late_init\n");
+	debug("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
 
 	board_init_adjust_env();
 	
-	debug("load_disk_partitions\n");
 	load_disk_partitions();
 
 #ifdef CONFIG_RK_PWM_REMOTE
         RemotectlInit();
 #endif
 
-	debug("rkimage_prepare_fdt\n");
 	rkimage_prepare_fdt();
 
 #ifdef CONFIG_RK_KEY
-	debug("key_init\n");
 	key_init();
 #endif
 

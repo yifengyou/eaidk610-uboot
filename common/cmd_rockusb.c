@@ -1438,6 +1438,7 @@ static void rkusb_lowformat_check(void)
 
 int do_rockusb(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 {
+	debug("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
 #ifdef CONFIG_RK_UDC
 	int ret;
 	RKUSBINFO("do_rockusb\n");

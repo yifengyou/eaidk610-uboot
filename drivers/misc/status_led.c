@@ -27,11 +27,6 @@ typedef struct {
 } led_dev_t;
 
 led_dev_t led_dev[] = {
-    {	STATUS_LED_BIT,
-	STATUS_LED_STATE,
-	STATUS_LED_PERIOD,
-	0,
-    },
 #if defined(STATUS_LED_BIT1)
     {	STATUS_LED_BIT1,
 	STATUS_LED_STATE1,
@@ -53,6 +48,20 @@ led_dev_t led_dev[] = {
 	0,
     },
 #endif
+#if defined(STATUS_LED_BIT4)
+    {	STATUS_LED_BIT4,
+	STATUS_LED_STATE4,
+	STATUS_LED_PERIOD4,
+	0,
+    },
+#endif
+#if defined(STATUS_LED_BIT5)
+    {	STATUS_LED_BIT5,
+	STATUS_LED_STATE5,
+	STATUS_LED_PERIOD5,
+	0,
+    },
+#endif
 };
 
 #define MAX_LED_DEV	(sizeof(led_dev)/sizeof(led_dev_t))
@@ -63,7 +72,8 @@ static void status_led_init (void)
 {
 	led_dev_t *ld;
 	int i;
-
+	
+	debug("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
 	for (i = 0, ld = led_dev; i < MAX_LED_DEV; i++, ld++)
 		__led_init (ld->mask, ld->state);
 	status_led_init_done = 1;
@@ -93,7 +103,9 @@ void status_led_tick (ulong timestamp)
 void status_led_set (int led, int state)
 {
 	led_dev_t *ld;
-
+	
+	debug("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
+	
 	if (led < 0 || led >= MAX_LED_DEV)
 		return;
 
@@ -108,4 +120,5 @@ void status_led_set (int led, int state)
 		state = STATUS_LED_ON;	/* always start with LED _ON_       */
 	}
 	__led_set (ld->mask, state);
+	debug("[YYF] initr_status_led led_set gpio:%x state:%x\n", ld->mask, state);
 }

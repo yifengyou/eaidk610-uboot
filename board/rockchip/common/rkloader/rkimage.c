@@ -757,6 +757,9 @@ void rkimage_prepare_fdt(void)
 {
 	gd->fdt_blob = NULL;
 	gd->fdt_size = 0;
+	
+	debug("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
+	
 #ifdef CONFIG_RESOURCE_PARTITION
 	resource_content content = rkimage_load_fdt(get_disk_partition(BOOT_NAME));
 	if (!content.load_addr) {

@@ -191,6 +191,7 @@ int gpio_direction_output(unsigned gpio, int value)
  */
 int gpio_get_value(unsigned gpio)
 {
+	debug("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
 	struct rk_gpio_bank *bank = rk_gpio_get_bank(gpio);
 
 	if (bank == NULL) {
@@ -211,6 +212,7 @@ int gpio_get_value(unsigned gpio)
  */
 int gpio_set_value(unsigned gpio, int value)
 {
+	debug("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
 	struct rk_gpio_bank *bank = rk_gpio_get_bank(gpio);
 
 	if (bank == NULL) {

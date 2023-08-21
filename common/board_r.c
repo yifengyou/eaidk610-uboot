@@ -558,6 +558,8 @@ static int initr_kgdb(void)
 #if defined(CONFIG_STATUS_LED) && defined(STATUS_LED_BOOT)
 static int initr_status_led(void)
 {
+	debug("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
+	
 	status_led_set(STATUS_LED_BOOT, STATUS_LED_BLINKING);
 
 	return 0;

@@ -30,6 +30,7 @@ __maybe_unused static key_config	key_power;
 
 
 #ifdef CONFIG_OF_LIBFDT
+/* EAIDK610定义 */
 __maybe_unused static struct fdt_gpio_state	gPowerKey;
 __maybe_unused static int rkkey_parse_powerkey_dt(const void *blob, struct fdt_gpio_state *powerkey_gpio);
 #endif
@@ -185,6 +186,7 @@ __maybe_unused static void PowerKeyInit(void)
 	key_power.type = KEY_INT;
 	key_power.key.ioint.name = "power_key";
 #ifdef CONFIG_OF_LIBFDT
+	/* EAIDK610 定义 */
 	key_power.key.ioint.gpio = gPowerKey.gpio;
 #else
 	key_power.key.ioint.gpio = INVALID_GPIO;
@@ -251,6 +253,7 @@ int rkkey_power_state(void)
 }
 
 #ifdef CONFIG_OF_LIBFDT
+/* EAIDK610定义 */
 static int rkkey_parse_powerkey_dt(const void *blob, struct fdt_gpio_state *powerkey_gpio)
 {
 	int powerkey_node;
@@ -258,18 +261,20 @@ static int rkkey_parse_powerkey_dt(const void *blob, struct fdt_gpio_state *powe
 #if 0
 	powerkey_node = fdt_path_offset(blob, "/adc/key/power-key");
 #else
+	/* 根据兼容性获取定义 */
 	powerkey_node = fdt_node_offset_by_compatible(blob, -1, "rockchip,key");
 	if (powerkey_node < 0) {
 		printf("no key node\n");
 		return -1;
 	}
+	/* 根据name获取节点信息 */
 	powerkey_node = fdt_subnode_offset(blob, powerkey_node, "power-key");
 #endif
 	if (powerkey_node < 0) {
 		printf("no power key node\n");
 		return -1;
 	}
-
+	/* 获取gpio信息 */
 	fdtdec_decode_gpio(blob, powerkey_node, "gpios", powerkey_gpio);
 	powerkey_gpio->flags = !(powerkey_gpio->flags & OF_GPIO_ACTIVE_LOW);
 
@@ -290,6 +295,8 @@ struct fdt_gpio_state *rkkey_get_powerkey(void)
 
 void key_init(void)
 {
+	debug("[YYF] %s:%s:%d\n", __FILE__, __func__, __LINE__);
+	
 	memset(&key_rockusb, 0, sizeof(key_config));
 	memset(&key_recovery, 0, sizeof(key_config));
 	memset(&key_fastboot, 0, sizeof(key_config));
