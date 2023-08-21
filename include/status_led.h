@@ -222,24 +222,123 @@ void status_led_set  (int led, int state);
 #elif defined(CONFIG_ROCKCHIP)
 
 typedef unsigned long led_id_t;
+/*
+ * RK3399提供5组GPIO（GPIO0~GPIO4）一共122个，所有GPIO都可以作为中断
+
+EAIDK610 一共有5个LED灯，定义如下：
+gpio-leds {
+	compatible = "gpio-leds";
+	pinctrl-names = "default";
+	pinctrl-0 = <0xd3>;
+
+	led@1 {
+		gpios = <0x3c 0x02 0x00>;  // gpios = <&gpio>
+		label = "system_work_led1";
+		retain-state-suspended;
+	};
+
+	led@2 {
+		gpios = <0x3c 0x0c 0x00>;
+		label = "system_work_led2";
+		retain-state-suspended;
+	};
+
+	led@3 {
+		gpios = <0x3c 0x0d 0x00>;
+		label = "system_work_led3";
+		retain-state-suspended;
+	};
+
+	led@4 {
+		gpios = <0xcf 0x1b 0x00>;
+		label = "wifi_work_led";
+	};
+
+	led@5 {
+		gpios = <0xcf 0x1c 0x00>;
+		label = "bt_work_led";
+	};
+};
+
+leds: gpio-leds {
+	compatible = "gpio-leds";
+	pinctrl-names = "default";
+	pinctrl-0 =<&leds_gpio>;
+
+	led@1 {
+		gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
+		label = "system_work_led1";
+		retain-state-suspended;
+	};
+
+	led@2 {
+		gpios = <&gpio0 12 GPIO_ACTIVE_HIGH>;
+		label = "system_work_led2";
+		retain-state-suspended;
+	};
+
+	led@3 {
+		gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>;
+		label = "system_work_led3";
+		retain-state-suspended;
+	};
+
+	led@4 {
+		gpios = <&gpio2 27 GPIO_ACTIVE_HIGH>;
+		label = "wifi_work_led";
+	};
+
+	led@5 {
+		gpios = <&gpio2 28 GPIO_ACTIVE_HIGH>;
+		label = "bt_work_led";
+	};
+};
+ */
+
+
 
 /* system_work_led1 蓝色 */
+/* GPIO0_A2
+ * 0*32+0*8+2
+ * 属于第二组GPIO A2是2
+ * 0x002中第三位是GPIO0组，02是组内编号，也就是0*8+2，十六进制0x2
+ * */
 # define STATUS_LED_BIT1           0x002
 # define STATUS_LED_PERIOD1        (CONFIG_SYS_HZ / 2)
 # define STATUS_LED_STATE1         STATUS_LED_OFF
 /* system_work_led2 红色 */
+/* GPIO0_B4
+ * 0*32+1*8+4
+ * 属于第二组GPIO B4是12
+ * 0x00c中第三位是GPIO0组，0c是组内编号，也就是1*8+4=12，十六进制0xc
+ * */
 # define STATUS_LED_BIT2           0x00c
 # define STATUS_LED_PERIOD2        (CONFIG_SYS_HZ / 2)
 # define STATUS_LED_STATE2         STATUS_LED_OFF
 /* system_work_led3 绿色 */
+/* GPIO0_B5
+ * 0*32 + 1*8 +5
+ * 属于第二组GPIO B5是13
+ * 0x00d中第三位是GPIO0组，0d是组内编号，也就是1*8+5=13，十六进制0xd
+ * */
 # define STATUS_LED_BIT3           0x00d
 # define STATUS_LED_PERIOD3        (CONFIG_SYS_HZ / 2)
 # define STATUS_LED_STATE3         STATUS_LED_OFF
 /* wifi_work_led 橙色 */
+/* GPIO2_D3
+ * 2*32+3*8+3
+ * 属于第二组GPIO D3是27
+ * 0x21b中第三位是GPIO2组，1b是组内编号，也就是3*8+3=27，十六进制0x1b
+ * */
 # define STATUS_LED_BIT4           0x21b
 # define STATUS_LED_PERIOD4        (CONFIG_SYS_HZ / 2)
 # define STATUS_LED_STATE4         STATUS_LED_OFF
 /* bt_work_led 蓝色 */
+/* GPIO2_D4
+ * 2*32 + 3*8 +4
+ * 属于第二组GPIO D4是28
+ * 0x21c中第三位是GPIO2组，1c是组内编号，也就是3*8+4=28，十六进制0x1c
+ * */
 # define STATUS_LED_BIT5           0x21c
 # define STATUS_LED_PERIOD5        (CONFIG_SYS_HZ / 2)
 # define STATUS_LED_STATE5         STATUS_LED_OFF
