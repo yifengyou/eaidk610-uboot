@@ -343,8 +343,9 @@ leds: gpio-leds {
 # define STATUS_LED_PERIOD5        (CONFIG_SYS_HZ / 2)
 # define STATUS_LED_STATE5         STATUS_LED_OFF
 
-
+/* 默认高电平使能 */
 # define STATUS_LED_ACTIVE          0 /* LED on for bit == 0 */
+/* 默认开启第一个led灯 */
 # define STATUS_LED_BOOT            0 /* 第0个(1个)用于boot状态灯 */
 
 extern void __led_toggle (led_id_t mask);

@@ -174,8 +174,7 @@ U_BOOT_CMD(
 #endif
 
 #endif
-
 	
-	"all] [on|off|toggle|set] [value]",
+	"all] [on|off|toggle|set] [0|1|2|...]",
 	"[led_name] [on|off|toggle|set] sets or clears led(s)"
 );
