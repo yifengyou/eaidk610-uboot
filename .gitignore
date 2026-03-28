@@ -1,6 +1,8 @@
 *.bkp
 /build
 /gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu*
+/.config.old
+/.config
 
 /.config
 *.o

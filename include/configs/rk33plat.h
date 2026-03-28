@@ -164,7 +164,7 @@
 	#define CONFIG_BOARD_SPECIFIC_LED
 	#define CONFIG_CMD_LED
 	
-    #define CONFIG_BOOTDELAY 99
+    #define CONFIG_BOOTDELAY 6
     #define CONFIG_CMD_RARP
 	#define CONFIG_CMD_NET
 /*  #define CONFIG_RK_GMAC
