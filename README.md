@@ -1,5 +1,11 @@
-# eaidk610-uboot
+# eaidk610官方uboot源码归档
 
+MD5值：
+
+```shell
+# md5sum eaidk610-official-uboot-src.tar.gz
+fbf719fd518f7ea9fd239c22b924f24a  eaidk610-official-uboot-src.tar.gz
+```
 
 
 ## QA
@@ -35,13 +41,6 @@ sudo apt-get purge -y libfdt-dev
 ```
 
 * <https://github.com/hardkernel/u-boot/issues/73>
-
-
-### 
-
-
-
-
 
 
 
